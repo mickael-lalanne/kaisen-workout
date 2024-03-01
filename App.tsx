@@ -1,14 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { DARK_THEME } from './theme';
-import MyText from './components/shared/MyText';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './components/screens/HomeScreen';
+import WorkoutScreen from './components/screens/WorkoutScreen';
+import ProgramScreen from './components/screens/ProgramScreen';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
     return (
-        <View style={styles.container}>
-            <MyText text="Open up App.tsx to start working on your app!"></MyText>
-            <StatusBar style="auto" />
-        </View>
+        <NavigationContainer>
+            <StatusBar style="dark" />
+            <Stack.Navigator
+                initialRouteName="Home"
+                screenOptions={{
+                    headerStyle: {
+                        backgroundColor: DARK_THEME.primary,
+                    },
+                    headerTintColor: 'black',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    animation: 'none'
+                }}
+            >
+                <Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name="Workout" component={WorkoutScreen} />
+                <Stack.Screen name="Program" component={ProgramScreen} />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
 

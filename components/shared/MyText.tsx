@@ -8,7 +8,7 @@ type MyTextProps = {
 export default function MyText(props: MyTextProps) {
     return (
         <Text style={styles.text}>
-            {props.text}
+            {props.text} !!
         </Text>
     );
 }
