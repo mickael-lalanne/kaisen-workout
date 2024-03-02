@@ -1,6 +1,5 @@
 import { View, StyleSheet } from 'react-native';
 import MyText from '../shared/MyText';
-import { DARK_THEME } from '../../theme';
 import { useQuery } from '@realm/react';
 import { Exercise } from '../../models/Exercise';
 
@@ -27,6 +26,5 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: DARK_THEME.background,
     },
 });

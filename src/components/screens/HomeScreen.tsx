@@ -1,6 +1,5 @@
 import { View, StyleSheet, Button } from 'react-native';
 import MyText from '../shared/MyText';
-import { DARK_THEME } from '../../theme';
 import { EScreens, RouterProps } from '../../router';
 
 export default function HomeScreen({ navigation }: RouterProps) {
@@ -24,6 +23,5 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: DARK_THEME.background,
     },
 });

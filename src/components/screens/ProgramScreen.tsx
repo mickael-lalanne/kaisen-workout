@@ -1,6 +1,5 @@
 import { View, StyleSheet, Button, TextInput } from 'react-native';
 import MyText from '../shared/MyText';
-import { DARK_THEME } from '../../theme';
 import { BSON } from 'realm';
 import { Exercise } from '../../models/Exercise';
 import { useRealm } from '@realm/react';
@@ -41,6 +40,5 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: DARK_THEME.background,
     },
 });
