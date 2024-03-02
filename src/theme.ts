@@ -1,4 +1,4 @@
-import { MD3LightTheme as DefaultTheme, MD3Theme } from 'react-native-paper';
+import { MD3LightTheme as DefaultTheme, MD3Theme, useTheme } from 'react-native-paper';
 import { MD3Colors } from 'react-native-paper/lib/typescript/types';
 
 const LIGHT_THEME_COLORS: MD3Colors = {
@@ -87,14 +87,24 @@ const DARK_THEME_COLORS: MD3Colors = {
     backdrop: 'rgba(51, 47, 55, 0.4)',
 };
 
-export const LIGHT_THEME: MD3Theme = {
+export const LIGHT_THEME = {
     ...DefaultTheme,
-    // Specify custom property in nested object
-    colors: LIGHT_THEME_COLORS,
+    colors: {
+        ...LIGHT_THEME_COLORS,
+        text: 'black',
+        background: 'white',
+    },
 };
 
-export const DARK_THEME: MD3Theme = {
+export const DARK_THEME = {
     ...DefaultTheme,
-    // Specify custom property in nested object
-    colors: DARK_THEME_COLORS,
+    colors: {
+        ...DARK_THEME_COLORS,
+        text: 'white',
+        background: 'black'
+    },
 };
+
+export type AppTheme = typeof LIGHT_THEME | typeof DARK_THEME;
+
+export const useAppTheme = () => useTheme<AppTheme>();

@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native';
-import MyText from '../shared/MyText';
 import { useQuery } from '@realm/react';
 import { Exercise } from '../../models/Exercise';
+import { Text } from 'react-native-paper';
 
 export default function WorkoutScreen() {
     // Find
@@ -13,10 +13,10 @@ export default function WorkoutScreen() {
 
     return (
         <View style={styles.viewContainer}>
-            <MyText text="Workout Screen"></MyText>
+            <Text>Workout Screen</Text>
 
-            <MyText text="My exercises :"></MyText>
-            <MyText text={sortedExercises}></MyText>
+            <Text>My exercises :</Text>
+            <Text>{sortedExercises}</Text>
         </View>
     );
 }

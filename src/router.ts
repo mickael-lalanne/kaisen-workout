@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export enum EScreens {
-    Home = 'Home',
+    Home = 'Kaisen Workout - Home',
     Program = 'Program',
     Workout = 'Workout',
 }

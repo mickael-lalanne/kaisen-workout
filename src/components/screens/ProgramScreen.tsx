@@ -1,9 +1,9 @@
 import { View, StyleSheet, Button, TextInput } from 'react-native';
-import MyText from '../shared/MyText';
 import { BSON } from 'realm';
 import { Exercise } from '../../models/Exercise';
 import { useRealm } from '@realm/react';
 import { useState } from 'react';
+import { Text } from 'react-native-paper';
 
 export default function ProgramScreen() {
     const realm = useRealm();
@@ -23,7 +23,7 @@ export default function ProgramScreen() {
 
     return (
         <View style={styles.viewContainer}>
-            <MyText text="Program Screen"></MyText>
+            <Text>Program Screen</Text>
 
             <TextInput
                 onChangeText={setExerciseName}
