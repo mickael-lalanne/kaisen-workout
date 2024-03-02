@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { DARK_THEME } from './theme';
+import { DARK_THEME } from './src/theme';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RealmProvider } from '@realm/react';
-import HomeScreen from './components/screens/HomeScreen';
-import WorkoutScreen from './components/screens/WorkoutScreen';
-import ProgramScreen from './components/screens/ProgramScreen';
-import { Exercise } from './models/Exercise';
+import HomeScreen from './src/components/screens/HomeScreen';
+import WorkoutScreen from './src/components/screens/WorkoutScreen';
+import ProgramScreen from './src/components/screens/ProgramScreen';
+import { Exercise } from './src/models/Exercise';
 
 const Stack = createNativeStackNavigator();
 
