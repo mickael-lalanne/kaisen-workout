@@ -1,6 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 import { useQuery } from '@realm/react';
-import { Exercise } from '../../models/Exercise';
+import { Exercise } from '../models/Exercise';
 import { Text } from 'react-native-paper';
 
 export default function WorkoutScreen() {

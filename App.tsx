@@ -6,7 +6,8 @@ import AppChild from './src/AppChild';
 
 export default function App() {
     return (
-        <RealmProvider schema={[Exercise]}>
+        // Remove "deleteRealmIfMigrationNeeded" option when the app is released
+        <RealmProvider schema={[Exercise]} deleteRealmIfMigrationNeeded={true}>
             <Provider store={store}>
                 <AppChild />
             </Provider>

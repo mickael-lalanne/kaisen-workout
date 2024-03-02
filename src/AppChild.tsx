@@ -6,9 +6,9 @@ import {
 } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { PaperProvider, adaptNavigationTheme } from 'react-native-paper';
-import HomeScreen from './components/screens/HomeScreen';
-import WorkoutScreen from './components/screens/WorkoutScreen';
-import ProgramScreen from './components/screens/ProgramScreen';
+import HomeScreen from './screens/HomeScreen';
+import WorkoutScreen from './screens/WorkoutScreen';
+import ProgramScreen from './screens/ProgramScreen';
 import { DARK_THEME, LIGHT_THEME } from './theme';
 import DrawerContent from './components/DrawerContent';
 import { EScreens } from './router';

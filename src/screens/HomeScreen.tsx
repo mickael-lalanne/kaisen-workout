@@ -1,7 +1,7 @@
 import { View, StyleSheet, Pressable, Dimensions, Image } from 'react-native';
-import { EScreens, RouterProps } from '../../router';
+import { EScreens, RouterProps } from '../router';
 import { Text } from 'react-native-paper';
-import { useAppTheme } from '../../theme';
+import { useAppTheme } from '../theme';
 import { useState } from 'react';
 
 export default function HomeScreen({ navigation }: RouterProps) {
@@ -47,7 +47,7 @@ export default function HomeScreen({ navigation }: RouterProps) {
             {HomeButton(EScreens.Workout)}
 
             <Image
-                source={require('../../assets/gojo.png')}
+                source={require('../assets/gojo.png')}
                 style={styles.gojo}
             />
             <View style={{ flex: 3.2 }}></View>

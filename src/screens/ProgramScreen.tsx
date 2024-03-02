@@ -1,6 +1,6 @@
 import { View, StyleSheet, Button, TextInput } from 'react-native';
 import { BSON } from 'realm';
-import { Exercise } from '../../models/Exercise';
+import { Exercise } from '../models/Exercise';
 import { useRealm } from '@realm/react';
 import { useState } from 'react';
 import { Text } from 'react-native-paper';

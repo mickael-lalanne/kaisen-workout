@@ -6,6 +6,8 @@ import Realm, { BSON } from 'realm';
 export class Exercise extends Realm.Object {
     _id: BSON.ObjectId = new BSON.ObjectId();
     name!: string;
+    description!: string;
+    image!: ArrayBuffer;
 
     static primaryKey = '_id';
 }
