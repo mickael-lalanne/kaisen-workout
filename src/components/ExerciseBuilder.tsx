@@ -1,6 +1,6 @@
 import { View, StyleSheet, Image, Pressable } from 'react-native';
 import React, { useState } from 'react';
-import { IconButton, Modal, Portal, TextInput } from 'react-native-paper';
+import { Dialog, IconButton, Portal, TextInput } from 'react-native-paper';
 import {
     ImagePickerResponse,
     launchImageLibrary,
@@ -37,7 +37,7 @@ export default function ExerciseBuilder({
                 _id: new BSON.ObjectId(),
                 name,
                 description,
-                image
+                image,
             });
         });
 
@@ -85,30 +85,32 @@ export default function ExerciseBuilder({
 
     return (
         <Portal>
-            <Modal
-                visible={visible}
-                onDismiss={cancelExerciseCreation}
-                contentContainerStyle={styles.addExerciseModal}
-            >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Dialog visible={visible} onDismiss={cancelExerciseCreation}>
+                <Dialog.Title style={styles.confirmTitle}>
+                    Exercise creation
+                </Dialog.Title>
+                <Dialog.Content>
+                    <View
+                        style={{ flexDirection: 'row', alignItems: 'center' }}
+                    >
+                        <TextInput
+                            style={{ flexGrow: 1 }}
+                            label="Exercise name"
+                            value={name}
+                            onChangeText={(text) => setName(text)}
+                        />
+                        {ExerciseImage()}
+                    </View>
                     <TextInput
-                        style={{ flexGrow: 1 }}
-                        label="Exercise name"
-                        value={name}
-                        onChangeText={(text) => setName(text)}
+                        label="Description"
+                        multiline
+                        numberOfLines={4}
+                        value={description}
+                        onChangeText={(text) => setDescription(text)}
                     />
-                    {ExerciseImage()}
-                </View>
+                </Dialog.Content>
 
-                <TextInput
-                    label="Description"
-                    multiline
-                    numberOfLines={4}
-                    value={description}
-                    onChangeText={(text) => setDescription(text)}
-                />
-
-                <View style={styles.footerContainer}>
+                <Dialog.Actions style={{ marginTop: 0 }}>
                     <IconButton
                         icon="cancel"
                         mode="outlined"
@@ -124,28 +126,21 @@ export default function ExerciseBuilder({
                         onPress={saveExercise}
                         disabled={!name || !image}
                     />
-                </View>
-            </Modal>
+                </Dialog.Actions>
+            </Dialog>
         </Portal>
     );
 }
 
 const styles = StyleSheet.create({
-    addExerciseModal: {
-        backgroundColor: 'white',
-        padding: 20,
-        margin: 20,
-        borderRadius: 20,
+    confirmTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     imageButton: {
         width: 55,
         height: 55,
         borderRadius: 5,
         marginRight: 0,
-    },
-    footerContainer: {
-        marginTop: 20,
-        flexDirection: 'row',
-        alignSelf: 'flex-end',
     },
 });
