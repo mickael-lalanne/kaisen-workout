@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import 'react-native-get-random-values'
 import { RealmProvider } from '@realm/react';
 import { Exercise } from './src/models/Exercise';
 import { Provider } from 'react-redux';

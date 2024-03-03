@@ -7,7 +7,7 @@ export class Exercise extends Realm.Object {
     _id: BSON.ObjectId = new BSON.ObjectId();
     name!: string;
     description!: string;
-    image!: ArrayBuffer;
+    image!: string; // base64
 
     static primaryKey = '_id';
 }

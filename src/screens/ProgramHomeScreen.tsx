@@ -2,7 +2,8 @@ import { View, StyleSheet } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { EScreens, RouterProps } from '../app/router';
 import ExerciseBuilder from '../components/ExerciseBuilder';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import ExerciseViewer from '../components/ExerciseViewer';
 
 export default function ProgramHome({ navigation }: RouterProps) {
     const [exerciseBuilderVisible, setExerciseBuilderVisible] =
@@ -10,6 +11,8 @@ export default function ProgramHome({ navigation }: RouterProps) {
 
     return (
         <View style={styles.viewContainer}>
+            {/* PROGRAMS */}
+
             <Text style={styles.title}>My programs</Text>
             <Button
                 icon="plus-circle-outline"
@@ -19,6 +22,9 @@ export default function ProgramHome({ navigation }: RouterProps) {
             >
                 New Program
             </Button>
+
+            {/* EXERCISES */}
+
             <Text style={{ ...styles.title, marginTop: 30 }}>My exercises</Text>
             <Button
                 icon="plus-circle-outline"
@@ -29,11 +35,12 @@ export default function ProgramHome({ navigation }: RouterProps) {
                 Add Exercise
             </Button>
 
-            {/* EXERCISE BUILDER */}
             <ExerciseBuilder
                 visible={exerciseBuilderVisible}
                 hideBuilder={() => setExerciseBuilderVisible(false)}
             ></ExerciseBuilder>
+
+            <ExerciseViewer />
         </View>
     );
 }
@@ -42,7 +49,6 @@ const styles = StyleSheet.create({
     viewContainer: {
         flex: 1,
         padding: 20,
-        // alignItems: 'center',
     },
     title: {
         paddingLeft: 30,
