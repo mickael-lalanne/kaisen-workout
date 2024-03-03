@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import { RealmProvider } from '@realm/react';
 import { Exercise } from './src/models/Exercise';
 import { Provider } from 'react-redux';
