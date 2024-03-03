@@ -1,5 +1,4 @@
 import Realm, { BSON } from 'realm';
-import { Set } from './Set';
 
 export class Program extends Realm.Object {
     _id: BSON.ObjectId = new BSON.ObjectId();
@@ -9,4 +8,12 @@ export class Program extends Realm.Object {
     sets!: Set[];
 
     static primaryKey = '_id';
+}
+
+export class Set extends Realm.Object {
+    _id: BSON.ObjectId = new BSON.ObjectId();
+    name!: string;
+    recupDuration!: number;
+    repsNumber!: number;
+    exerciceIds!: BSON.ObjectId[];
 }

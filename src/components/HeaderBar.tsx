@@ -24,6 +24,8 @@ export default function HeaderBar() {
             case EScreens.Progression:
                 return 'Analyze like Nanami';
             case EScreens.Program:
+            case EScreens.ProgramHome:
+            case EScreens.ProgramBuilder:
             default:
                 return 'Become as strong as Gojo';
         }
@@ -45,7 +47,7 @@ export default function HeaderBar() {
             >   
                 <TouchableRipple onPress={() => dispatch(setDarkMode(!darkMode))}>
                     <View style={styles.preference}>
-                        <Text>Dark Theme</Text>
+                        <Text>Dark mode</Text>
                         <View pointerEvents="none">
                             <Switch value={darkMode} />
                         </View>
