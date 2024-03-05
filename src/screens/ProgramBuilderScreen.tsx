@@ -4,12 +4,12 @@ import { useRealm } from '@realm/react';
 import React, { useState } from 'react';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { Program } from '../models/Program';
+import SetBuilder from '../components/SetBuilder';
 
 export default function ProgramBuilderScreen() {
     const realm = useRealm();
     const [programName, setProgramName] = useState<string>('');
-    const [showSetBuilder, setShowSetBuilder] =
-        useState<boolean>(false);
+    const [showSetBuilder, setShowSetBuilder] = useState<boolean>(false);
 
     /**
      * Add a program to the local database
@@ -21,31 +21,6 @@ export default function ProgramBuilderScreen() {
                 name: programName,
             });
         });
-    };
-
-    const SetBuilder = (): React.JSX.Element => {
-        if (!showSetBuilder) {
-            return (
-                <Button
-                    mode="outlined"
-                    onPress={() => setShowSetBuilder(true)}
-                >
-                    Add set
-                </Button>
-            );
-        }
-
-        return (
-            <View>
-                <Text>Builder...</Text>
-                <Button
-                    mode="outlined"
-                    onPress={() => setShowSetBuilder(false)}
-                >
-                    Cancel set
-                </Button>
-            </View>
-        );
     };
 
     return (
@@ -61,7 +36,14 @@ export default function ProgramBuilderScreen() {
             <View style={styles.setsContainer}>
                 <Text>Sets :</Text>
 
-                {SetBuilder()}
+                <Button mode="outlined" onPress={() => setShowSetBuilder(true)}>
+                    Add set
+                </Button>
+                <SetBuilder
+                    visible={showSetBuilder}
+                    addSet={() => {}}
+                    hideBuilder={() => setShowSetBuilder(false)}
+                />
             </View>
 
             <View style={{ flex: 1 }}></View>

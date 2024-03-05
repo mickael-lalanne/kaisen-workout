@@ -10,10 +10,10 @@ export class Program extends Realm.Object {
     static primaryKey = '_id';
 }
 
-export class Set extends Realm.Object {
-    _id: BSON.ObjectId = new BSON.ObjectId();
-    name!: string;
-    recupDuration!: number;
-    repsNumber!: number;
-    exerciceIds!: BSON.ObjectId[];
+export interface Set {
+    _id: BSON.ObjectId;
+    notes: string;
+    recupDuration: number;
+    repsNumber: number;
+    exerciceIds: BSON.ObjectId[];
 }

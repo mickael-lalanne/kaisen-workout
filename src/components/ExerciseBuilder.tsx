@@ -12,11 +12,13 @@ import { Exercise } from '../models/Exercise';
 export type ExerciseBuilderProps = {
     visible: boolean;
     hideBuilder: () => void;
+    saveHandler: (exercose: Exercise) => void;
 };
 
 export default function ExerciseBuilder({
     visible,
     hideBuilder,
+    saveHandler
 }: ExerciseBuilderProps) {
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
@@ -32,15 +34,16 @@ export default function ExerciseBuilder({
     };
 
     const saveExercise = (): void => {
+
         realm.write(() => {
-            realm.create(Exercise, {
+            const savedExercise: Exercise = realm.create(Exercise, {
                 _id: new BSON.ObjectId(),
                 name,
                 description,
                 image,
             });
+            saveHandler(savedExercise);
         });
-
         hideBuilder();
     };
 
@@ -87,7 +90,7 @@ export default function ExerciseBuilder({
         <Portal>
             <Dialog visible={visible} onDismiss={cancelExerciseCreation}>
                 <Dialog.Title style={styles.confirmTitle}>
-                    Exercise creation
+                    Add an exercise
                 </Dialog.Title>
                 <Dialog.Content>
                     <View
@@ -95,7 +98,7 @@ export default function ExerciseBuilder({
                     >
                         <TextInput
                             style={{ flexGrow: 1 }}
-                            label="Exercise name"
+                            label="Name"
                             value={name}
                             onChangeText={(text) => setName(text)}
                         />
