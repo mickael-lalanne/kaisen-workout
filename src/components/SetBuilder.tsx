@@ -42,10 +42,7 @@ export default function SetBuilder({
     const theme = useAppTheme();
 
     const cancelSetCreation = (): void => {
-        setNotes('');
-        setRecupDuration(DEFAULT_RECUP_DURATION);
-        setRepsNumber(DEFAULT_REPS_NUMBER);
-        setExerciceIds([]);
+        _resetState();
         hideBuilder();
     };
 
@@ -67,7 +64,7 @@ export default function SetBuilder({
             exerciceIds
         };
         addSet(setToAdd);
-
+        _resetState();
         hideBuilder();
     };
 
@@ -95,6 +92,13 @@ export default function SetBuilder({
         }
 
         setRecupDuration(recupDuration.replace(/[^0-9]/g, ''));
+    };
+
+    const _resetState = (): void => {
+        setNotes('');
+        setRecupDuration(DEFAULT_RECUP_DURATION);
+        setRepsNumber(DEFAULT_REPS_NUMBER);
+        setExerciceIds([]);
     };
 
     const ExercisesViewer = (): React.JSX.Element[] => {

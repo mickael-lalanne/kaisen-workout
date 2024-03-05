@@ -3,12 +3,14 @@ import { BSON } from 'realm';
 import { useRealm } from '@realm/react';
 import React, { useState } from 'react';
 import { Button, Text, TextInput } from 'react-native-paper';
-import { Program } from '../models/Program';
+import { Program, Set } from '../models/Program';
 import SetBuilder from '../components/SetBuilder';
+import SetViewer from '../components/SetViewer';
 
 export default function ProgramBuilderScreen() {
     const realm = useRealm();
     const [programName, setProgramName] = useState<string>('');
+    const [programSets, setProgramSets] = useState<Set[]>([]);
     const [showSetBuilder, setShowSetBuilder] = useState<boolean>(false);
 
     /**
@@ -23,6 +25,10 @@ export default function ProgramBuilderScreen() {
         });
     };
 
+    const addSet = (setToAdd: Set): void => {
+        setProgramSets(programSets.concat(setToAdd));
+    };
+
     return (
         <View style={styles.viewContainer}>
             <TextInput
@@ -34,14 +40,14 @@ export default function ProgramBuilderScreen() {
             {/* TODO : IMAGE */}
 
             <View style={styles.setsContainer}>
-                <Text>Sets :</Text>
+                <SetViewer sets={programSets} />
 
                 <Button mode="outlined" onPress={() => setShowSetBuilder(true)}>
                     Add set
                 </Button>
                 <SetBuilder
                     visible={showSetBuilder}
-                    addSet={() => {}}
+                    addSet={addSet}
                     hideBuilder={() => setShowSetBuilder(false)}
                 />
             </View>
