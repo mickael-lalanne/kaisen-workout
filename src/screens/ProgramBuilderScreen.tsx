@@ -10,8 +10,9 @@ import {
     ImagePickerResponse,
     launchImageLibrary,
 } from 'react-native-image-picker';
+import { EScreens, RouterProps } from '../app/router';
 
-export default function ProgramBuilderScreen() {
+export default function ProgramBuilderScreen({ navigation }: RouterProps) {
     const realm = useRealm();
     const [programName, setProgramName] = useState<string>('');
     const [programDescription, setProgramDescription] = useState<string>('');
@@ -25,9 +26,12 @@ export default function ProgramBuilderScreen() {
     const addProgram = (): void => {
         realm.write(() => {
             realm.create(Program, {
-                _id: new BSON.ObjectId(),
                 name: programName,
+                description: programDescription,
+                image: programImage,
+                sets: programSets,
             });
+            navigation.navigate(EScreens.ProgramHome)
         });
     };
 
@@ -148,13 +152,14 @@ export default function ProgramBuilderScreen() {
                     style={{ marginRight: 20 }}
                     contentStyle={{ width: FOOTER_BTN_WIDTH }}
                     mode="outlined"
-                    onPress={() => console.log('Pressed')}
+                    onPress={() => navigation.navigate(EScreens.ProgramHome)}
                 >
                     Cancel
                 </Button>
                 <Button
                     contentStyle={{ width: FOOTER_BTN_WIDTH }}
                     mode="contained"
+                    disabled={!programName || !programSets.length || !programImage}
                     onPress={() => addProgram()}
                 >
                     Create

@@ -4,10 +4,15 @@ import { EScreens, RouterProps } from '../app/router';
 import ExerciseBuilder from '../components/ExerciseBuilder';
 import React, { useState } from 'react';
 import ExerciseViewer from '../components/ExerciseViewer';
+import { useQuery } from '@realm/react';
+import { Program } from '../models/Program';
+import ProgramViewer from '../components/program/ProgramViewer';
 
 export default function ProgramHome({ navigation }: RouterProps) {
     const [exerciseBuilderVisible, setExerciseBuilderVisible] =
         useState<boolean>(false);
+
+    const programs = useQuery(Program);
 
     return (
         <View style={styles.viewContainer}>
@@ -22,6 +27,8 @@ export default function ProgramHome({ navigation }: RouterProps) {
             >
                 New Program
             </Button>
+
+            <ProgramViewer programs={programs} />
 
             {/* EXERCISES */}
 

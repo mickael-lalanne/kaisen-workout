@@ -4,8 +4,9 @@ export class Program extends Realm.Object {
     _id: BSON.ObjectId = new BSON.ObjectId();
     name!: string;
     description!: string;
-    image!: ArrayBuffer;
+    image!: string;
     sets!: Set[];
+    creationDate: Date = new Date();
 
     static primaryKey = '_id';
 }
