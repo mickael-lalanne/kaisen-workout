@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 20,
         paddingVertical: 5,
+        paddingTop: 15,
     },
     setsContainer: {
         marginTop: 5,

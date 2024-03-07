@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Appbar, Menu, Switch, Text, TouchableRipple } from 'react-native-paper';
+import { Appbar, Menu, Switch, Text, TouchableRipple, useTheme } from 'react-native-paper';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectDarkMode, setDarkMode } from '../features/preferences';
 import { useRoute } from '@react-navigation/native';
@@ -12,6 +12,7 @@ export default function HeaderBar() {
     const darkMode: boolean = useAppSelector(selectDarkMode);
     const dispatch = useAppDispatch();
     const route = useRoute();
+    const theme = useTheme();
 
     const openMenu = () => setVisible(true);
 
@@ -20,19 +21,19 @@ export default function HeaderBar() {
     const _getTitle = (): string => {
         switch (route.name) {
             case EScreens.Workout:
-                return 'Perform like Toji';
+                return 'Perform like Toji ⚔️';
             case EScreens.Progression:
-                return 'Analyze like Nanami';
+                return 'Analyze like Nanami 🤓';
             case EScreens.Program:
             case EScreens.ProgramHome:
             case EScreens.ProgramBuilder:
             default:
-                return 'Become as strong as Gojo';
+                return 'Become strong like Gojo 💪';
         }
     };
 
     return (
-        <Appbar.Header>
+        <Appbar.Header style={{ backgroundColor: theme.colors.secondaryContainer }}>
             {/* <Appbar.BackAction onPress={_goBack} /> */}
             <Appbar.Content title={_getTitle()} titleStyle={{fontSize: 17, fontWeight: 'bold'}} />
             <Menu
