@@ -1,8 +1,8 @@
 import { useQuery } from '@realm/react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Dialog, IconButton, Portal, Text } from 'react-native-paper';
-import { Exercise } from '../models/Exercise';
-import { useAppTheme } from '../app/theme';
+import { Exercise } from '../../models/Exercise';
+import { useAppTheme } from '../../app/theme';
 import ExerciseBuilder from './ExerciseBuilder';
 import { useState } from 'react';
 

@@ -1,9 +1,9 @@
 import { View, StyleSheet, Image } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { EScreens, RouterProps } from '../app/router';
-import ExerciseBuilder from '../components/ExerciseBuilder';
+import ExerciseBuilder from '../components/program/ExerciseBuilder';
 import React, { useState } from 'react';
-import ExerciseViewer from '../components/ExerciseViewer';
+import ExerciseViewer from '../components/program/ExerciseViewer';
 import { useQuery } from '@realm/react';
 import { Program } from '../models/Program';
 import ProgramViewer from '../components/program/ProgramViewer';

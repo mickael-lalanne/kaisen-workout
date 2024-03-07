@@ -7,7 +7,7 @@ import {
 } from 'react-native-image-picker';
 import { BSON } from 'realm';
 import { useRealm } from '@realm/react';
-import { Exercise } from '../models/Exercise';
+import { Exercise } from '../../models/Exercise';
 
 export type ExerciseBuilderProps = {
     visible: boolean;

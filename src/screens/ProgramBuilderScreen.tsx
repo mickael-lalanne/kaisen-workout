@@ -4,8 +4,8 @@ import { useRealm } from '@realm/react';
 import React, { useState } from 'react';
 import { Button, Icon, IconButton, Text, TextInput } from 'react-native-paper';
 import { Program, Set } from '../models/Program';
-import SetBuilder from '../components/SetBuilder';
-import SetViewer from '../components/SetViewer';
+import SetBuilder from '../components/program/SetBuilder';
+import SetViewer from '../components/program/SetViewer';
 import {
     ImagePickerResponse,
     launchImageLibrary,

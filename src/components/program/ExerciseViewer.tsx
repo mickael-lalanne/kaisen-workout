@@ -1,6 +1,6 @@
 import { useQuery, useRealm } from '@realm/react';
 import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { Exercise } from '../models/Exercise';
+import { Exercise } from '../../models/Exercise';
 import { useState } from 'react';
 import { Button, Dialog, Portal, Text } from 'react-native-paper';
 

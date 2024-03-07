@@ -2,11 +2,11 @@ import { View, StyleSheet, Image, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Button, Dialog, Divider, HelperText, IconButton, Portal, Switch, Text, TextInput, TouchableRipple } from 'react-native-paper';
 import { BSON } from 'realm';
-import { Exercise } from '../models/Exercise';
-import { Set } from '../models/Program';
+import { Exercise } from '../../models/Exercise';
+import { Set } from '../../models/Program';
 import ExercicePicker from './ExercisePicker';
 import { useQuery } from '@realm/react';
-import { useAppTheme } from '../app/theme';
+import { useAppTheme } from '../../app/theme';
 
 export type SetBuilderProps = {
     visible: boolean;

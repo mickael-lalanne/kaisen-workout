@@ -1,16 +1,16 @@
 import { useQuery } from '@realm/react';
 import { Image, StyleSheet, View } from 'react-native';
 import { IconButton, Text, TouchableRipple } from 'react-native-paper';
-import { Exercise } from '../models/Exercise';
+import { Exercise } from '../../models/Exercise';
 import React, { useEffect, useState } from 'react';
-import { Set } from '../models/Program';
-import { useAppTheme } from '../app/theme';
+import { Set } from '../../models/Program';
+import { useAppTheme } from '../../app/theme';
 import {
     NestableDraggableFlatList,
     NestableScrollContainer,
     RenderItemParams,
 } from 'react-native-draggable-flatlist';
-import { SET_HEIGHT } from '../app/styles';
+import { SET_HEIGHT } from '../../app/styles';
 import { BSON } from 'realm';
 
 export type SetViewerProps = {
