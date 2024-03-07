@@ -12,6 +12,7 @@ export type SetBuilderProps = {
     visible: boolean;
     addSet: (set: Set) => void;
     hideBuilder: () => void;
+    setsNumber: number;
 };
 
 const DEFAULT_RECUP_DURATION: string = '90';
@@ -21,6 +22,7 @@ export default function SetBuilder({
     visible,
     addSet,
     hideBuilder,
+    setsNumber
 }: SetBuilderProps) {
     const [notes, setNotes] = useState<string>('');
     const [recupDuration, setRecupDuration] = useState<string>(DEFAULT_RECUP_DURATION);
@@ -61,6 +63,7 @@ export default function SetBuilder({
             notes,
             recupDuration: Number(recupDuration),
             repsNumber: Number(repsNumber),
+            order: setsNumber,
             exerciceIds
         };
         addSet(setToAdd);

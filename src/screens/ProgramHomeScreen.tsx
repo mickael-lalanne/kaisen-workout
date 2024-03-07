@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { EScreens, RouterProps } from '../app/router';
 import ExerciseBuilder from '../components/ExerciseBuilder';
@@ -41,6 +41,8 @@ export default function ProgramHome({ navigation }: RouterProps) {
             ></ExerciseBuilder>
 
             <ExerciseViewer />
+
+            <Image source={require('../assets/gojo.png')} style={styles.gojo} resizeMode='contain' />
         </View>
     );
 }
@@ -59,5 +61,12 @@ const styles = StyleSheet.create({
     addButton: {
         width: 170,
         marginVertical: 10,
+    },
+    gojo: {
+        position: 'absolute',
+        bottom: 0,
+        left: -5,
+        width: 150,
+        height: 250,
     },
 });

@@ -15,5 +15,6 @@ export interface Set {
     notes: string;
     recupDuration: number;
     repsNumber: number;
+    order: number;
     exerciceIds: BSON.ObjectId[];
 }

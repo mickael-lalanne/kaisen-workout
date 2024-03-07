@@ -34,7 +34,7 @@ export default function HeaderBar() {
     return (
         <Appbar.Header>
             {/* <Appbar.BackAction onPress={_goBack} /> */}
-            <Appbar.Content title={_getTitle()} titleStyle={{fontSize: 17, fontStyle: 'italic'}} />
+            <Appbar.Content title={_getTitle()} titleStyle={{fontSize: 17, fontWeight: 'bold'}} />
             <Menu
                 visible={visible}
                 onDismiss={closeMenu}

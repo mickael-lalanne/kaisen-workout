@@ -18,7 +18,6 @@ export default function ProgramScreen() {
                 <Stack.Screen name={EScreens.ProgramBuilder} component={ProgramBuilderScreen} />
             </Stack.Navigator>
 
-            <Image source={require('../assets/gojo.png')} style={styles.gojo} resizeMode='contain' />
         </View>
     );
 }
@@ -31,12 +30,5 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontStyle: 'italic',
         marginTop: 20,
-    },
-    gojo: {
-        position: 'absolute',
-        bottom: 0,
-        left: -5,
-        width: 150,
-        height: 250,
     },
 });
