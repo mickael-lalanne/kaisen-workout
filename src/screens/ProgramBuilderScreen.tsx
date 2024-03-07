@@ -2,7 +2,7 @@ import { View, StyleSheet, Pressable, Image } from 'react-native';
 import { BSON } from 'realm';
 import { useRealm } from '@realm/react';
 import React, { useState } from 'react';
-import { Button, IconButton, Text, TextInput } from 'react-native-paper';
+import { Button, Icon, IconButton, Text, TextInput } from 'react-native-paper';
 import { Program, Set } from '../models/Program';
 import SetBuilder from '../components/SetBuilder';
 import SetViewer from '../components/SetViewer';
@@ -39,7 +39,7 @@ export default function ProgramBuilderScreen() {
         const newSetsList: Set[] = programSets.filter((s) => s._id !== setId);
         const newOrderedSetsList: Set[] = newSetsList.map((s, i) => {
             return { ...s, order: i };
-        });;
+        });
 
         setProgramSets(newOrderedSetsList);
     };
@@ -63,9 +63,7 @@ export default function ProgramBuilderScreen() {
                     <Image
                         style={{
                             ...styles.imageButton,
-                            // marginLeft: 5,
                             objectFit: 'cover',
-                            // marginVertical: 6,
                         }}
                         source={{ uri: programImage }}
                     ></Image>
@@ -82,6 +80,20 @@ export default function ProgramBuilderScreen() {
                 />
             );
         }
+    };
+
+    const NoSetMessage = (): React.JSX.Element | undefined => {
+        if (programSets.length === 0) {
+            return (
+                <View style={styles.noSetMessageContainer}>
+                    <Text style={styles.noSetMessageText}>
+                        No set yet. {"\n"}
+                        Start adding exercises by clicking there.
+                    </Text>
+                    <Icon source="arrow-up-right" size={20} />
+                </View>
+            );
+        };
     };
 
     return (
@@ -118,6 +130,8 @@ export default function ProgramBuilderScreen() {
                         onPress={() => setShowSetBuilder(true)}
                     />
                 </View>
+
+                {NoSetMessage()}
 
                 <SetViewer sets={programSets} deleteHandler={deleteSet} />
 
@@ -173,7 +187,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
     },
-    footerButton: {},
     imageButton: {
         borderRadius: 5,
         margin: 0,
@@ -181,4 +194,16 @@ const styles = StyleSheet.create({
         height: 100,
         width: 100,
     },
+    noSetMessageContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        margin: 10,
+        paddingLeft: 50,
+        paddingRight: 10
+    },
+    noSetMessageText: {
+        marginRight: 10,
+        fontStyle: 'italic',
+    }
 });
