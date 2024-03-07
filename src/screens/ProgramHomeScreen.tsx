@@ -19,20 +19,22 @@ export default function ProgramHome({ navigation }: RouterProps) {
             {/* PROGRAMS */}
 
             <Text style={styles.title}>My programs</Text>
+
+            <ProgramViewer programs={programs} />
+
             <Button
                 icon="plus-circle-outline"
                 mode="outlined"
                 style={styles.addButton}
+                contentStyle={{ height: 60 }}
                 onPress={() => navigation.navigate(EScreens.ProgramBuilder)}
             >
-                New Program
+                CREATE A NEW PROGRAM
             </Button>
-
-            <ProgramViewer programs={programs} />
 
             {/* EXERCISES */}
 
-            <Text style={{ ...styles.title, marginTop: 30 }}>My exercises</Text>
+            {/* <Text style={{ ...styles.title, marginTop: 30 }}>My exercises</Text>
             <Button
                 icon="plus-circle-outline"
                 mode="outlined"
@@ -47,7 +49,7 @@ export default function ProgramHome({ navigation }: RouterProps) {
                 hideBuilder={() => setExerciseBuilderVisible(false)}
             ></ExerciseBuilder>
 
-            <ExerciseViewer />
+            <ExerciseViewer /> */}
 
             <Image source={require('../assets/gojo.png')} style={styles.gojo} resizeMode='contain' />
         </View>
@@ -63,11 +65,10 @@ const styles = StyleSheet.create({
         paddingLeft: 30,
         textTransform: 'uppercase',
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 20,
     },
     addButton: {
-        width: 170,
-        marginVertical: 10,
+        marginTop: 20,
     },
     gojo: {
         position: 'absolute',
