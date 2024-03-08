@@ -1,9 +1,9 @@
 import { View, StyleSheet, Pressable, Image } from 'react-native';
 import { BSON } from 'realm';
 import { useRealm } from '@realm/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Icon, IconButton, Text, TextInput } from 'react-native-paper';
-import { Program, Set } from '../models/Program';
+import { ISet, Set, Program } from '../models/Program';
 import SetBuilder from '../components/program/SetBuilder';
 import SetViewer from '../components/program/SetViewer';
 import {
@@ -12,36 +12,67 @@ import {
 } from 'react-native-image-picker';
 import { EScreens, RouterProps } from '../app/router';
 
-export default function ProgramBuilderScreen({ navigation }: RouterProps) {
+enum EBuilderMode {
+    Creation = 'Creation',
+    Edition = 'Edition',
+}
+
+export default function ProgramBuilderScreen({
+    navigation,
+    route,
+}: RouterProps) {
     const realm = useRealm();
     const [programName, setProgramName] = useState<string>('');
     const [programDescription, setProgramDescription] = useState<string>('');
     const [programImage, setProgramImage] = useState<string>('');
-    const [programSets, setProgramSets] = useState<Set[]>([]);
+    const [programSets, setProgramSets] = useState<ISet[]>([]);
     const [showSetBuilder, setShowSetBuilder] = useState<boolean>(false);
+    const [programId, setProgramId] = useState<BSON.ObjectId | undefined>();
+
+    // Called when a program is selected for edition
+    useEffect(() => {
+        if (route.params?.programId) {
+            const program = realm.objectForPrimaryKey(
+                Program,
+                new BSON.ObjectID(route.params.programId)
+            );
+            if (program) {
+                setProgramName(program.name);
+                setProgramDescription(program.description);
+                setProgramImage(program.image);
+                setProgramSets(program.sets as unknown as ISet[]);
+                setProgramId(program._id);
+            }
+        }
+    }, [route.params?.programId]);
 
     /**
-     * Add a program to the local database
+     * Create or save a program to the local database
      */
-    const addProgram = (): void => {
+    const saveProgram = (): void => {
         realm.write(() => {
-            realm.create(Program, {
-                name: programName,
-                description: programDescription,
-                image: programImage,
-                sets: programSets,
-            });
-            navigation.navigate(EScreens.ProgramHome)
+            realm.create(
+                Program,
+                {
+                    _id: programId || new BSON.ObjectId(),
+                    name: programName,
+                    description: programDescription,
+                    image: programImage,
+                    sets: programSets as unknown as Set[],
+                },
+                programId ? Realm.UpdateMode.Modified : undefined
+            );
+            navigation.navigate(EScreens.ProgramHome);
         });
     };
 
-    const addSet = (setToAdd: Set): void => {
+    const addSet = (setToAdd: ISet): void => {
         setProgramSets(programSets.concat(setToAdd));
     };
 
     const deleteSet = (setId: BSON.ObjectId): void => {
-        const newSetsList: Set[] = programSets.filter((s) => s._id !== setId);
-        const newOrderedSetsList: Set[] = newSetsList.map((s, i) => {
+        const newSetsList: ISet[] = programSets.filter((s) => s._id !== setId);
+        const newOrderedSetsList: ISet[] = newSetsList.map((s, i) => {
             return { ...s, order: i };
         });
 
@@ -91,13 +122,13 @@ export default function ProgramBuilderScreen({ navigation }: RouterProps) {
             return (
                 <View style={styles.noSetMessageContainer}>
                     <Text style={styles.noSetMessageText}>
-                        No set yet. {"\n"}
+                        No set yet. {'\n'}
                         Start adding exercises by clicking there.
                     </Text>
                     <Icon source="arrow-up-right" size={20} />
                 </View>
             );
-        };
+        }
     };
 
     return (
@@ -159,17 +190,19 @@ export default function ProgramBuilderScreen({ navigation }: RouterProps) {
                 <Button
                     contentStyle={{ width: FOOTER_BTN_WIDTH }}
                     mode="contained"
-                    disabled={!programName || !programSets.length || !programImage}
-                    onPress={() => addProgram()}
+                    disabled={
+                        !programName || !programSets.length || !programImage
+                    }
+                    onPress={() => saveProgram()}
                 >
-                    Create
+                    { programId ? 'Update' : 'Create' }
                 </Button>
             </View>
         </View>
     );
 }
 
-const FOOTER_BTN_WIDTH: number = 95;
+const FOOTER_BTN_WIDTH: number = 125;
 
 const styles = StyleSheet.create({
     viewContainer: {
@@ -206,10 +239,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         margin: 10,
         paddingLeft: 50,
-        paddingRight: 10
+        paddingRight: 10,
     },
     noSetMessageText: {
         marginRight: 10,
         fontStyle: 'italic',
-    }
+    },
 });

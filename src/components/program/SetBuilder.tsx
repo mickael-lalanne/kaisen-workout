@@ -1,16 +1,16 @@
 import { View, StyleSheet, Image, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Button, Dialog, Divider, HelperText, IconButton, Portal, Switch, Text, TextInput, TouchableRipple } from 'react-native-paper';
+import { Dialog, Divider, HelperText, IconButton, Portal, Switch, Text, TextInput, TouchableRipple } from 'react-native-paper';
 import { BSON } from 'realm';
 import { Exercise } from '../../models/Exercise';
-import { Set } from '../../models/Program';
+import { ISet } from '../../models/Program';
 import ExercicePicker from './ExercisePicker';
 import { useQuery } from '@realm/react';
 import { useAppTheme } from '../../app/theme';
 
 export type SetBuilderProps = {
     visible: boolean;
-    addSet: (set: Set) => void;
+    addSet: (set: ISet) => void;
     hideBuilder: () => void;
     setsNumber: number;
 };
@@ -28,7 +28,7 @@ export default function SetBuilder({
     const [recupDuration, setRecupDuration] = useState<string>(DEFAULT_RECUP_DURATION);
     const [repsNumber, setRepsNumber] = useState<string>(DEFAULT_REPS_NUMBER);
     const [isSuperset, setIsSuperset] = useState<boolean>(false);
-    const [exerciceIds, setExerciceIds] = useState<BSON.ObjectId[]>([]);
+    const [exerciceIds, setExerciceIds] = useState<string[]>([]);
     const [repsNumberError, setRepsNumberError] = useState<boolean>(false);
     const [recupDurationError, setRecupDurationError] = useState<boolean>(false);
     const [exercisePickerVisible, setExercisePickerVisible] = useState<boolean>(false);
@@ -49,16 +49,16 @@ export default function SetBuilder({
     };
 
     const addExercise = (exercise: Exercise) => {
-        setExerciceIds(exerciceIds.concat(exercise._id));
+        setExerciceIds(exerciceIds.concat(exercise._id.toString()));
         setExercisePickerVisible(false);
     };
 
     const deleteExercise = (exerciseId: BSON.ObjectId) => {
-        setExerciceIds(exerciceIds.filter(e => e.toJSON() !== exerciseId.toString()).slice());
+        setExerciceIds(exerciceIds.filter(e => e !== exerciseId.toString()).slice());
     };
 
     const saveSet = (): void => {
-        const setToAdd: Set = {
+        const setToAdd: ISet = {
             _id: new BSON.ObjectId(),
             notes,
             recupDuration: Number(recupDuration),

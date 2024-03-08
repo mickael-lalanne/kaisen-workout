@@ -12,7 +12,7 @@ export enum EScreens {
 type RootStackParamList = {
     [EScreens.Program]: undefined;
     [EScreens.ProgramHome]: undefined;
-    [EScreens.ProgramBuilder]: undefined;
+    [EScreens.ProgramBuilder]: undefined | { programId: string };
     [EScreens.Workout]: undefined;
     [EScreens.Progression]: undefined;
 };

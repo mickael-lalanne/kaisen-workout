@@ -3,7 +3,7 @@ import { Image, StyleSheet, View } from 'react-native';
 import { IconButton, Text, TouchableRipple } from 'react-native-paper';
 import { Exercise } from '../../models/Exercise';
 import React, { useEffect, useState } from 'react';
-import { Set } from '../../models/Program';
+import { ISet } from '../../models/Program';
 import { useAppTheme } from '../../app/theme';
 import {
     NestableDraggableFlatList,
@@ -14,12 +14,12 @@ import { SET_HEIGHT } from '../../app/styles';
 import { BSON } from 'realm';
 
 export type SetViewerProps = {
-    sets: Set[];
+    sets: ISet[];
     deleteHandler: (setId: BSON.ObjectId) => void;
 };
 
 export default function SetViewer({ sets, deleteHandler }: SetViewerProps) {
-    const [draggableSetsLists, setDraggableSetsLists] = useState<Set[]>(sets);
+    const [draggableSetsLists, setDraggableSetsLists] = useState<ISet[]>(sets);
 
     useEffect(() => {
         setDraggableSetsLists(sets);
@@ -28,14 +28,14 @@ export default function SetViewer({ sets, deleteHandler }: SetViewerProps) {
     const exercises = useQuery(Exercise);
     const theme = useAppTheme();
 
-    const onSetDragEnd = (draggedSets: Set[]) => {
-        const orderedSets: Set[] = draggedSets.map((s, i) => {
+    const onSetDragEnd = (draggedSets: ISet[]) => {
+        const orderedSets: ISet[] = draggedSets.map((s, i) => {
             return { ...s, order: i };
         });;
         setDraggableSetsLists(orderedSets);
     };
 
-    const SetImages = (set: Set): React.JSX.Element[] => {
+    const SetImages = (set: ISet): React.JSX.Element[] => {
         const imagesElements: React.JSX.Element[] = [];
 
         set.exerciceIds.forEach((eId) => {
@@ -55,7 +55,7 @@ export default function SetViewer({ sets, deleteHandler }: SetViewerProps) {
         return imagesElements;
     };
 
-    const renderSet = ({ item, drag, isActive }: RenderItemParams<Set>) => {
+    const renderSet = ({ item, drag, isActive }: RenderItemParams<ISet>) => {
         const exercisesNames: string[] = item.exerciceIds.map(
             (eId) =>
                 exercises.find((e) => e._id.toString() === eId.toString())
@@ -99,7 +99,7 @@ export default function SetViewer({ sets, deleteHandler }: SetViewerProps) {
             <NestableDraggableFlatList
                 data={draggableSetsLists}
                 onDragEnd={({ data }) => onSetDragEnd(data)}
-                keyExtractor={(item: Set) => item._id.toString()}
+                keyExtractor={(item: ISet) => item._id.toString()}
                 renderItem={renderSet}
             />
         </NestableScrollContainer>

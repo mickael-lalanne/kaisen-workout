@@ -20,7 +20,7 @@ export default function ProgramHome({ navigation }: RouterProps) {
 
             <Text style={styles.title}>My programs</Text>
 
-            <ProgramViewer programs={programs} />
+            <ProgramViewer programs={programs} navigation={navigation} />
 
             <Button
                 icon="plus-circle-outline"
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         paddingLeft: 30,
         textTransform: 'uppercase',
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 10,
     },
     addButton: {
         marginTop: 20,

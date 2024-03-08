@@ -6,11 +6,12 @@ import { Provider } from 'react-redux';
 import { store } from './src/app/store';
 import AppChild from './src/AppChild';
 import { Program } from './src/models/Program';
+import { Set } from './src/models/Program';
 
 export default function App() {
     return (
         // Remove "deleteRealmIfMigrationNeeded" option when the app is released
-        <RealmProvider schema={[Program, Exercise]} deleteRealmIfMigrationNeeded={true}>
+        <RealmProvider schema={[Program, Exercise, Set]} deleteRealmIfMigrationNeeded={true}>
             <Provider store={store}>
                 <AppChild />
             </Provider>
