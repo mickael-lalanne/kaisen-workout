@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Program } from '../../models/Program';
 import { useAppTheme } from '../../app/theme';
 import { EScreens, RouterProps } from '../../app/router';
+import { useRealm } from '@realm/react';
+import ConfirmDialog from '../shared/ConfirmDialog';
 
 export type ProgramViewerProps = {
     programs: Realm.Results<Program>;
@@ -15,7 +17,23 @@ export default function ProgramViewer({
     programs,
 }: ProgramViewerProps) {
     const [isScrolling, setIsScrolling] = useState<boolean>(false);
+    const [programToDelete, setProgramToDelete] = useState<Program>();
+
     const theme = useAppTheme();
+    const realm = useRealm();
+
+    const deleteProgram = () => {
+        if (programToDelete) {
+            realm.write(() => {
+                const program = realm.objectForPrimaryKey(
+                    Program,
+                    programToDelete._id
+                );
+                realm.delete(program);
+            });
+            setProgramToDelete(undefined);
+        }
+    };
 
     const ProgramList = (): React.JSX.Element[] => {
         const programElements: React.JSX.Element[] = [];
@@ -37,10 +55,11 @@ export default function ProgramViewer({
                                 programId: p._id.toString(),
                             })
                         }
+                        onLongPress={() => setProgramToDelete(p)}
                         background={
                             isScrolling ? 'rgba(0, 0, 0, 0)' : undefined
                         }
-                        style={{ padding: 10, }}
+                        style={{ padding: 10 }}
                     >
                         <View style={styles.programContent}>
                             <Image
@@ -85,6 +104,14 @@ export default function ProgramViewer({
             >
                 {ProgramList()}
             </ScrollView>
+
+            <ConfirmDialog
+                visible={!!programToDelete}
+                title={`⚠️ Delete ${programToDelete?.name} program ?`}
+                content="Be carefull. Deleting the program will remove all the sets and the sessions associated with it."
+                confirmHandler={deleteProgram}
+                cancelHandler={() => setProgramToDelete(undefined)}
+            />
         </View>
     );
 }
