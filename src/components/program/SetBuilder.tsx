@@ -10,9 +10,10 @@ import { useAppTheme } from '../../app/theme';
 
 export type SetBuilderProps = {
     visible: boolean;
-    addSet: (set: ISet) => void;
+    saveHandler: (set: ISet) => void;
     hideBuilder: () => void;
     setsNumber: number;
+    setToEdit?: ISet;
 };
 
 const DEFAULT_RECUP_DURATION: string = '90';
@@ -20,13 +21,16 @@ const DEFAULT_REPS_NUMBER: string = '4';
 
 export default function SetBuilder({
     visible,
-    addSet,
+    saveHandler,
     hideBuilder,
-    setsNumber
+    setsNumber,
+    setToEdit,
 }: SetBuilderProps) {
+    const [id, setId] = useState<BSON.ObjectId>(new BSON.ObjectId());
     const [notes, setNotes] = useState<string>('');
     const [recupDuration, setRecupDuration] = useState<string>(DEFAULT_RECUP_DURATION);
     const [repsNumber, setRepsNumber] = useState<string>(DEFAULT_REPS_NUMBER);
+    const [order, setOrder] = useState<number>(setsNumber);
     const [isSuperset, setIsSuperset] = useState<boolean>(false);
     const [exerciceIds, setExerciceIds] = useState<string[]>([]);
     const [repsNumberError, setRepsNumberError] = useState<boolean>(false);
@@ -39,6 +43,17 @@ export default function SetBuilder({
             setExerciceIds([exerciceIds[0]]);
         }
     }, [isSuperset]);
+
+    useEffect(() => {
+        if (setToEdit) {
+            setId(setToEdit._id);
+            setOrder(setToEdit.order);
+            setNotes(setToEdit.notes);
+            setRecupDuration(setToEdit.recupDuration.toString());
+            setRepsNumber(setToEdit.repsNumber.toString());
+            setExerciceIds(setToEdit.exerciceIds);
+        }
+    }, [setToEdit]);
 
     const exercises = useQuery(Exercise);
     const theme = useAppTheme();
@@ -54,19 +69,19 @@ export default function SetBuilder({
     };
 
     const deleteExercise = (exerciseId: BSON.ObjectId) => {
-        setExerciceIds(exerciceIds.filter(e => e !== exerciseId.toString()).slice());
+        setExerciceIds([...exerciceIds.filter(e => e !== exerciseId.toString())]);
     };
 
     const saveSet = (): void => {
         const setToAdd: ISet = {
-            _id: new BSON.ObjectId(),
+            _id: id,
             notes,
             recupDuration: Number(recupDuration),
             repsNumber: Number(repsNumber),
-            order: setsNumber,
+            order,
             exerciceIds
         };
-        addSet(setToAdd);
+        saveHandler(setToAdd);
         _resetState();
         hideBuilder();
     };
@@ -241,7 +256,7 @@ export default function SetBuilder({
                         size={25}
                         style={{ width: 75 }}
                         onPress={saveSet}
-                        disabled={exerciceIds.length === 0 }
+                        disabled={exerciceIds.length === 0 || !recupDuration || !repsNumber}
                     />
                 </Dialog.Actions>
             </Dialog>

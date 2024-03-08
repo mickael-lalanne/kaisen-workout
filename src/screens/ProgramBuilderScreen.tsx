@@ -12,11 +12,6 @@ import {
 } from 'react-native-image-picker';
 import { EScreens, RouterProps } from '../app/router';
 
-enum EBuilderMode {
-    Creation = 'Creation',
-    Edition = 'Edition',
-}
-
 export default function ProgramBuilderScreen({
     navigation,
     route,
@@ -27,7 +22,8 @@ export default function ProgramBuilderScreen({
     const [programImage, setProgramImage] = useState<string>('');
     const [programSets, setProgramSets] = useState<ISet[]>([]);
     const [showSetBuilder, setShowSetBuilder] = useState<boolean>(false);
-    const [programId, setProgramId] = useState<BSON.ObjectId | undefined>();
+    const [programId, setProgramId] = useState<BSON.ObjectId>();
+    const [setToEdit, setSetToEdit] = useState<ISet>();
 
     // Called when a program is selected for edition
     useEffect(() => {
@@ -66,8 +62,22 @@ export default function ProgramBuilderScreen({
         });
     };
 
-    const addSet = (setToAdd: ISet): void => {
-        setProgramSets(programSets.concat(setToAdd));
+    const setHandler = (setToAdd: ISet): void => {
+        if (setToEdit) {
+            const index: number = programSets.findIndex(
+                (s) => s._id.toString() === setToEdit._id.toString()
+            );
+            const newSetsList: ISet[] = [...programSets];
+            newSetsList[index] = setToAdd;
+            setProgramSets(newSetsList);
+            setSetToEdit(undefined);
+        } else {
+            setProgramSets(programSets.concat(setToAdd));
+        }
+    };
+
+    const editSet = (setToEdit: ISet): void => {
+        setSetToEdit(setToEdit);
     };
 
     const deleteSet = (setId: BSON.ObjectId): void => {
@@ -77,6 +87,11 @@ export default function ProgramBuilderScreen({
         });
 
         setProgramSets(newOrderedSetsList);
+    };
+
+    const hideSetBuilder = (): void => {
+        setShowSetBuilder(false);
+        setSetToEdit(undefined);
     };
 
     // TODO : shared with ExerciseBuilder
@@ -131,6 +146,16 @@ export default function ProgramBuilderScreen({
         }
     };
 
+    const SetDescription = (): React.JSX.Element | undefined => {
+        if (programSets.length > 0) {
+            return (
+                <Text style={styles.contentText}>
+                    Press a set to edit it, long press to reorder it !
+                </Text>
+            );
+        }
+    };
+
     return (
         <View style={styles.viewContainer}>
             <TextInput
@@ -154,27 +179,35 @@ export default function ProgramBuilderScreen({
             </View>
 
             <View style={styles.setsContainer}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={styles.subtitle}>Sets</Text>
+                <View style={styles.setTextContainer}>
+                    <View style={{ justifyContent: 'flex-end' }}>
+                        <Text style={styles.subtitle}>Exercises</Text>
+                        {SetDescription()}
+                    </View>
                     <View style={{ flexGrow: 1 }}></View>
                     <IconButton
                         icon="plus"
                         size={20}
                         mode="outlined"
-                        style={{ borderRadius: 5 }}
+                        style={styles.addSetIcon}
                         onPress={() => setShowSetBuilder(true)}
                     />
                 </View>
 
                 {NoSetMessage()}
 
-                <SetViewer sets={programSets} deleteHandler={deleteSet} />
+                <SetViewer
+                    sets={programSets}
+                    deleteHandler={deleteSet}
+                    editHandler={editSet}
+                />
 
                 <SetBuilder
-                    visible={showSetBuilder}
-                    addSet={addSet}
-                    hideBuilder={() => setShowSetBuilder(false)}
+                    visible={showSetBuilder || !!setToEdit}
+                    saveHandler={setHandler}
+                    hideBuilder={hideSetBuilder}
                     setsNumber={programSets.length}
+                    setToEdit={setToEdit}
                 />
             </View>
 
@@ -195,7 +228,7 @@ export default function ProgramBuilderScreen({
                     }
                     onPress={() => saveProgram()}
                 >
-                    { programId ? 'Update' : 'Create' }
+                    {programId ? 'Update' : 'Create'}
                 </Button>
             </View>
         </View>
@@ -216,13 +249,20 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         alignContent: 'flex-start',
     },
+    setTextContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        marginBottom: 10,
+        height: 55,
+    },
     footerContainer: {
         marginVertical: 20,
         flexDirection: 'row',
         alignSelf: 'flex-end',
     },
     subtitle: {
-        marginVertical: 10,
+        marginTop: 10,
+        marginBottom: 5,
         fontWeight: 'bold',
         fontSize: 16,
     },
@@ -244,5 +284,14 @@ const styles = StyleSheet.create({
     noSetMessageText: {
         marginRight: 10,
         fontStyle: 'italic',
+    },
+    contentText: {
+        fontStyle: 'italic',
+        fontSize: 12,
+    },
+    addSetIcon: {
+        borderRadius: 5,
+        padding: 0,
+        marginBottom: 0,
     },
 });

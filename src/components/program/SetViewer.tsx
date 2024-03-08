@@ -16,9 +16,10 @@ import { BSON } from 'realm';
 export type SetViewerProps = {
     sets: ISet[];
     deleteHandler: (setId: BSON.ObjectId) => void;
+    editHandler: (setToEdit: ISet) => void;
 };
 
-export default function SetViewer({ sets, deleteHandler }: SetViewerProps) {
+export default function SetViewer({ sets, deleteHandler, editHandler }: SetViewerProps) {
     const [draggableSetsLists, setDraggableSetsLists] = useState<ISet[]>(sets);
 
     useEffect(() => {
@@ -64,7 +65,7 @@ export default function SetViewer({ sets, deleteHandler }: SetViewerProps) {
         const setNameToDisplay: string = exercisesNames.join(' / ');
 
         return (
-            <TouchableRipple onLongPress={drag}>
+            <TouchableRipple onLongPress={drag} onPress={() => editHandler(item)}>
                 <View
                     style={{
                         ...styles.setContainer,
