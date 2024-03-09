@@ -7,6 +7,7 @@ export enum EScreens {
     ProgramHome = 'Program Home',
     ProgramBuilder = 'Program Builder',
     ProgramViewer = 'Program Viewer',
+    Exercises = 'Exercises',
 }
 
 type RootStackParamList = {
@@ -15,6 +16,7 @@ type RootStackParamList = {
     [EScreens.ProgramBuilder]: undefined | { programId: string };
     [EScreens.Workout]: undefined;
     [EScreens.Progression]: undefined;
+    [EScreens.Exercises]: undefined;
 };
 
 export type RouterProps = { navigation: DrawerNavigationProp<RootStackParamList>, route?: any };

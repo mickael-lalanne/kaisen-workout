@@ -1,96 +1,113 @@
-import { useQuery, useRealm } from '@realm/react';
-import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { useQuery } from '@realm/react';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { IconButton, Text } from 'react-native-paper';
 import { Exercise } from '../../models/Exercise';
-import { useState } from 'react';
-import { Button, Dialog, Portal, Text } from 'react-native-paper';
+import { useAppTheme } from '../../app/theme';
 
-export default function ExerciseViewer() {
-    const [exerciseToDelete, setExerciseToDelete] = useState<Exercise>();
+export type ExerciseViewerProps = {
+    pressHandler: (exercise: Exercise) => void;
+    longPressHandler?: (exercise: Exercise) => void;
+    addHandler?: () => void;
+};
 
+export default function ExerciseViewer({
+    pressHandler,
+    longPressHandler,
+    addHandler,
+}: ExerciseViewerProps) {
     const exercises = useQuery(Exercise);
-    const realm = useRealm();
-
-    const deleteExercise = (): void => {
-        realm.write(() => {
-            realm.delete(exerciseToDelete);
-        });
-        setExerciseToDelete(undefined);
-    };
+    const theme = useAppTheme();
 
     const ExercisesList = (): React.JSX.Element[] => {
-        const exercicesList: React.JSX.Element[] = [];
+        const list: React.JSX.Element[] = [];
+
         exercises.forEach((e) => {
-            exercicesList.push(
+            list.push(
                 <Pressable
-                    onPress={() => setExerciseToDelete(e)}
+                    onPress={() => pressHandler(e)}
+                    onLongPress={() => longPressHandler && longPressHandler(e)}
                     key={e._id.toString()}
                 >
                     <Image
                         style={styles.exerciseImage}
                         source={{ uri: e.image }}
                     ></Image>
+                    <View
+                        style={{
+                            ...styles.exerciseNameContainer,
+                            backgroundColor: theme.colors.surface,
+                        }}
+                    >
+                        <Text numberOfLines={1} style={styles.exerciseName}>
+                            {e.name}
+                        </Text>
+                    </View>
                 </Pressable>
             );
         });
 
-        return exercicesList;
+        return list;
+    };
+
+    const AddButton = (): React.JSX.Element | undefined => {
+        if (addHandler) {
+            return (
+                <IconButton
+                    icon="plus"
+                    style={{
+                        ...styles.exerciseImage,
+                        ...styles.addExerciseBtn,
+                    }}
+                    onPress={addHandler}
+                />
+            );
+        }
     };
 
     return (
-        <>
-            <ScrollView style={{ flexDirection: 'row' }} horizontal>
+        <View>
+            <ScrollView contentContainerStyle={styles.scrollViewStyle}>
+                {AddButton()}
                 {ExercisesList()}
             </ScrollView>
-
-            <Portal>
-                <Dialog
-                    visible={!!exerciseToDelete}
-                    onDismiss={() => setExerciseToDelete(undefined)}
-                >
-                    <Dialog.Title style={styles.confirmTitle}>
-                        Delete the exercise ‛ {exerciseToDelete?.name} ’ ?
-                    </Dialog.Title>
-                    <Dialog.Content>
-                        <Text variant="bodyMedium">
-                            Deleting this exercise will also deletes it from all
-                            programs using it.
-                        </Text>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button
-                            onPress={() => setExerciseToDelete(undefined)}
-                            mode="contained"
-                            style={styles.confirmButton}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onPress={() => deleteExercise()}
-                            mode="outlined"
-                            style={styles.confirmButton}
-                        >
-                            Delete
-                        </Button>
-                    </Dialog.Actions>
-                </Dialog>
-            </Portal>
-        </>
+        </View>
     );
 }
 
+const RADIUS: number = 10;
+
 const styles = StyleSheet.create({
-    confirmTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
+    exerciseNameContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 6,
+        borderBottomLeftRadius: RADIUS,
+        borderBottomRightRadius: RADIUS,
     },
-    confirmButton: {
-        width: 70,
+    exerciseName: {
+        fontSize: 10,
     },
     exerciseImage: {
         height: 75,
         width: 75,
         objectFit: 'cover',
-        marginHorizontal: 6,
-        borderRadius: 10
+        borderRadius: RADIUS,
+    },
+    addExerciseBtn: {
+        borderWidth: 1,
+        borderColor: 'white',
+        margin: 0,
+    },
+    scrollViewStyle: {
+        flexDirection: 'row',
+        flexGrow: 1,
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        rowGap: 15,
+        columnGap: 15,
     },
 });

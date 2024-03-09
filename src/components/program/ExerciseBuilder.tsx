@@ -1,5 +1,5 @@
 import { View, StyleSheet, Image, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dialog, IconButton, Portal, TextInput } from 'react-native-paper';
 import {
     ImagePickerResponse,
@@ -13,20 +13,33 @@ export type ExerciseBuilderProps = {
     visible: boolean;
     hideBuilder: () => void;
     saveHandler: (exercose: Exercise) => void;
+    exerciseToEdit?: Exercise;
 };
 
 export default function ExerciseBuilder({
     visible,
     hideBuilder,
-    saveHandler
+    saveHandler,
+    exerciseToEdit
 }: ExerciseBuilderProps) {
+    const [id, setId] = useState<BSON.ObjectId>(new BSON.ObjectId());
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [image, setImage] = useState<string>();
 
     const realm = useRealm();
 
+    useEffect(() => {
+        if (exerciseToEdit) {
+            setId(exerciseToEdit._id);
+            setName(exerciseToEdit.name);
+            setDescription(exerciseToEdit.description);
+            setImage(exerciseToEdit.image);
+        }
+    }, [exerciseToEdit]);
+
     const cancelExerciseCreation = (): void => {
+        setId(new BSON.ObjectId());
         setName('');
         setDescription('');
         setImage(undefined);
@@ -34,14 +47,13 @@ export default function ExerciseBuilder({
     };
 
     const saveExercise = (): void => {
-
         realm.write(() => {
             const savedExercise: Exercise = realm.create(Exercise, {
-                _id: new BSON.ObjectId(),
+                _id: id,
                 name,
                 description,
                 image,
-            });
+            }, exerciseToEdit ? Realm.UpdateMode.Modified : undefined);
             saveHandler(savedExercise);
         });
         hideBuilder();
@@ -90,7 +102,7 @@ export default function ExerciseBuilder({
         <Portal>
             <Dialog visible={visible} onDismiss={cancelExerciseCreation}>
                 <Dialog.Title style={styles.confirmTitle}>
-                    Add an exercise
+                    { exerciseToEdit ? 'Edit' : 'Add'} an exercise
                 </Dialog.Title>
                 <Dialog.Content>
                     <View

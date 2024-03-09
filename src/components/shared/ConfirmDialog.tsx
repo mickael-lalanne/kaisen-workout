@@ -54,8 +54,9 @@ const styles = StyleSheet.create({
     },
     confirmContent: {
         fontSize: 12,
+        fontStyle: 'italic',
     },
     footerBtn: {
-        width: 100,
+        width: 80,
     },
 });

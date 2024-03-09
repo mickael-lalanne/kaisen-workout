@@ -22,7 +22,7 @@ export default function ProgramViewer({
     const theme = useAppTheme();
     const realm = useRealm();
 
-    const deleteProgram = () => {
+    const deleteProgram = (): void => {
         if (programToDelete) {
             realm.write(() => {
                 const program = realm.objectForPrimaryKey(

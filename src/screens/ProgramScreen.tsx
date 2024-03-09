@@ -5,6 +5,7 @@ import { EScreens } from '../app/router';
 import ProgramBuilderScreen from './ProgramBuilderScreen';
 import HeaderBar from '../components/HeaderBar';
 import ProgramHomeScreen from './ProgramHomeScreen';
+import ExerciseScreen from './ExercicesScreen';
 
 export default function ProgramScreen() {
     const Stack = createStackNavigator();
@@ -16,6 +17,7 @@ export default function ProgramScreen() {
             <Stack.Navigator screenOptions={{headerShown: false}}>
                 <Stack.Screen name={EScreens.ProgramHome} component={ProgramHomeScreen} />
                 <Stack.Screen name={EScreens.ProgramBuilder} component={ProgramBuilderScreen} />
+                <Stack.Screen name={EScreens.Exercises} component={ExerciseScreen} />
             </Stack.Navigator>
 
         </View>
