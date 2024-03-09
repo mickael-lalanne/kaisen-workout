@@ -1,12 +1,26 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Appbar, Menu, Switch, Text, TouchableRipple, useTheme } from 'react-native-paper';
+import {
+    Appbar,
+    Menu,
+    Switch,
+    Text,
+    TouchableRipple,
+    useTheme,
+} from 'react-native-paper';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectDarkMode, setDarkMode } from '../features/preferences';
-import { useRoute } from '@react-navigation/native';
-import { EScreens } from '../app/router';
+import {
+    getFocusedRouteNameFromRoute,
+    useRoute,
+} from '@react-navigation/native';
+import { EScreens, RouterProps } from '../app/router';
 
-export default function HeaderBar() {
+interface HeaderBarProps {
+    navigation: RouterProps['navigation'];
+}
+
+export default function HeaderBar({ navigation }: HeaderBarProps) {
     const [visible, setVisible] = useState<boolean>(false);
 
     const darkMode: boolean = useAppSelector(selectDarkMode);
@@ -19,23 +33,49 @@ export default function HeaderBar() {
     const closeMenu = () => setVisible(false);
 
     const _getTitle = (): string => {
-        switch (route.name) {
+        const routeName: EScreens = _getRouteName();
+
+        switch (routeName) {
             case EScreens.Workout:
                 return 'Perform like Toji ⚔️';
             case EScreens.Progression:
                 return 'Analyze like Nanami 🤓';
+            case EScreens.ProgramBuilder:
+                return 'Program Creation';
+            case EScreens.Exercises:
+                return 'Exercises';
             case EScreens.Program:
             case EScreens.ProgramHome:
-            case EScreens.ProgramBuilder:
             default:
                 return 'Become strong like Gojo 💪';
         }
     };
 
+    const _getRouteName = (): EScreens => {
+        return (getFocusedRouteNameFromRoute(route) ?? route.name) as EScreens;
+    };
+
+    const GoBackIcon = (): React.JSX.Element | undefined => {
+        const routeName: EScreens = _getRouteName();
+
+        const showBackIcon =
+            routeName === EScreens.ProgramBuilder ||
+            routeName === EScreens.Exercises;
+
+        if (showBackIcon) {
+            return <Appbar.BackAction onPress={() => navigation.goBack()} />;
+        }
+    };
+
     return (
-        <Appbar.Header style={{ backgroundColor: theme.colors.secondaryContainer }}>
-            {/* <Appbar.BackAction onPress={_goBack} /> */}
-            <Appbar.Content title={_getTitle()} titleStyle={{fontSize: 17, fontWeight: 'bold'}} />
+        <Appbar.Header
+            style={{ backgroundColor: theme.colors.secondaryContainer }}
+        >
+            {GoBackIcon()}
+            <Appbar.Content
+                title={_getTitle()}
+                titleStyle={{ fontSize: 17, fontWeight: 'bold' }}
+            />
             <Menu
                 visible={visible}
                 onDismiss={closeMenu}
@@ -45,8 +85,10 @@ export default function HeaderBar() {
                         onPress={openMenu}
                     ></Appbar.Action>
                 }
-            >   
-                <TouchableRipple onPress={() => dispatch(setDarkMode(!darkMode))}>
+            >
+                <TouchableRipple
+                    onPress={() => dispatch(setDarkMode(!darkMode))}
+                >
                     <View style={styles.preference}>
                         <Text>Dark mode</Text>
                         <View pointerEvents="none">

@@ -71,7 +71,6 @@ export default function ExerciseScreen() {
 
     return (
         <View style={styles.viewContainer}>
-            <Text style={styles.title}>My exercises</Text>
             <Text style={styles.subtitle}>
                 Press an exercise to edit it, long press to delete it !
             </Text>
@@ -122,14 +121,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
     },
-    title: {
-        paddingLeft: 30,
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
     subtitle: {
-        paddingLeft: 30,
         fontStyle: 'italic',
         fontSize: 12,
         marginBottom: 10,

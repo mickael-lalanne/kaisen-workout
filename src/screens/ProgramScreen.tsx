@@ -1,18 +1,18 @@
 import { View, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { EScreens } from '../app/router';
+import { EScreens, RouterProps } from '../app/router';
 import ProgramBuilderScreen from './ProgramBuilderScreen';
 import HeaderBar from '../components/HeaderBar';
 import ProgramHomeScreen from './ProgramHomeScreen';
 import ExerciseScreen from './ExercicesScreen';
 
-export default function ProgramScreen() {
+export default function ProgramScreen({ navigation }: RouterProps) {
     const Stack = createStackNavigator();
 
     return (
         <View style={styles.viewContainer}>
-            <HeaderBar></HeaderBar>
+            <HeaderBar navigation={navigation}></HeaderBar>
 
             <Stack.Navigator screenOptions={{headerShown: false}}>
                 <Stack.Screen name={EScreens.ProgramHome} component={ProgramHomeScreen} />
