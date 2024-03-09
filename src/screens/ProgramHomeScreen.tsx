@@ -2,22 +2,45 @@ import { View, StyleSheet, Image } from 'react-native';
 import { Button, Icon, IconButton, Text } from 'react-native-paper';
 import { EScreens, RouterProps } from '../app/router';
 import React, { useState } from 'react';
-import { useQuery } from '@realm/react';
+import { useQuery, useRealm } from '@realm/react';
 import { Program } from '../models/Program';
-import ProgramViewer from '../components/program/ProgramViewer';
+import ProgramViewer from '../components/shared/ProgramViewer';
 import { useAppTheme } from '../app/theme';
+import ConfirmDialog from '../components/shared/ConfirmDialog';
 
 export default function ProgramHome({ navigation }: RouterProps) {
+    const [programToDelete, setProgramToDelete] = useState<Program>();
+
     const programs = useQuery(Program);
     const theme = useAppTheme();
+    const realm = useRealm();
+
+    const deleteProgram = (): void => {
+        if (programToDelete) {
+            realm.write(() => {
+                const program = realm.objectForPrimaryKey(
+                    Program,
+                    programToDelete._id
+                );
+                realm.delete(program);
+            });
+            setProgramToDelete(undefined);
+        }
+    };
 
     return (
         <View style={styles.viewContainer}>
-            {/* PROGRAMS */}
-
             <Text style={styles.title}>My programs</Text>
 
-            <ProgramViewer programs={programs} navigation={navigation} />
+            <ProgramViewer
+                programs={programs}
+                pressHandler={(p: Program) =>
+                    navigation.navigate(EScreens.ProgramBuilder, {
+                        programId: p._id.toString(),
+                    })
+                }
+                longPressHandler={(p: Program) => setProgramToDelete(p)}
+            />
 
             <Button
                 icon="plus-circle-outline"
@@ -31,12 +54,22 @@ export default function ProgramHome({ navigation }: RouterProps) {
 
             <View style={{ flexGrow: 1 }}></View>
 
-            <View style={{...styles.exercisesTooltip, backgroundColor: theme.colors.surfaceVariant}}>
-                <Text style={{opacity: 0.7}}>Exercises</Text>
+            <View
+                style={{
+                    ...styles.exercisesTooltip,
+                    backgroundColor: theme.colors.surfaceVariant,
+                }}
+            >
+                <Text style={{ opacity: 0.7 }}>Exercises</Text>
                 <View style={styles.exercisesIconContainer}>
-                    <Icon source="triangle" size={20} color={theme.colors.surfaceVariant}></Icon>
+                    <Icon
+                        source="triangle"
+                        size={20}
+                        color={theme.colors.surfaceVariant}
+                    ></Icon>
                 </View>
             </View>
+
             <IconButton
                 icon="weight"
                 mode="outlined"
@@ -45,7 +78,19 @@ export default function ProgramHome({ navigation }: RouterProps) {
                 onPress={() => navigation.navigate(EScreens.Exercises)}
             />
 
-            <Image source={require('../assets/gojo.png')} style={styles.gojo} resizeMode='contain' />
+            <ConfirmDialog
+                visible={!!programToDelete}
+                title={`⚠️ Delete ${programToDelete?.name} program ?`}
+                content="Be carefull. Deleting the program will remove all the sets and the sessions associated with it."
+                confirmHandler={deleteProgram}
+                cancelHandler={() => setProgramToDelete(undefined)}
+            />
+
+            <Image
+                source={require('../assets/gojo.png')}
+                style={styles.gojo}
+                resizeMode="contain"
+            />
         </View>
     );
 }
@@ -93,5 +138,5 @@ const styles = StyleSheet.create({
         width: EXERCICES_BTN_SIZE,
         borderRadius: EXERCICES_BTN_SIZE / 2,
         alignSelf: 'flex-end',
-    }
+    },
 });

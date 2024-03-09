@@ -87,10 +87,15 @@ const DARK_THEME_COLORS: MD3Colors = {
     backdrop: 'rgba(51, 47, 55, 0.4)',
 };
 
+const COMMON_COLORS = {
+    info: '#48cae4',
+};
+
 export const LIGHT_THEME = {
     ...DefaultTheme,
     colors: {
         ...LIGHT_THEME_COLORS,
+        ...COMMON_COLORS,
         text: 'black',
         background: 'white',
     },
@@ -100,6 +105,7 @@ export const DARK_THEME = {
     ...DefaultTheme,
     colors: {
         ...DARK_THEME_COLORS,
+        ...COMMON_COLORS,
         text: 'white',
         background: 'black'
     },

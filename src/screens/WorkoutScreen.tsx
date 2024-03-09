@@ -1,24 +1,63 @@
 import { View, StyleSheet, Image } from 'react-native';
-import { useQuery } from '@realm/react';
-import { Exercise } from '../models/Exercise';
-import { Text } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import HeaderBar from '../components/HeaderBar';
+import { RouterProps } from '../app/router';
+import { useAppTheme } from '../app/theme';
+import ProgramSelector from '../components/workout/ProgramSelector';
+import { useState } from 'react';
+import { useQuery } from '@realm/react';
+import { Program } from '../models/Program';
+import InfoBox from '../components/shared/InfoBox';
 
-export default function WorkoutScreen() {
-    // Find
-    const exercises = useQuery(Exercise);
-    // Sort
-    const sortedExercises: string = useQuery(Exercise, (exercises) => {
-        return exercises.sorted('name', false);
-    }).toString();
+export default function WorkoutScreen({ navigation }: RouterProps) {
+    const [programSelectorVisible, setProgramSelectorVisible] =
+        useState<boolean>(false);
+
+    const theme = useAppTheme();
+    const programs = useQuery(Program);
+
+    const NoProgramMessage = (): React.JSX.Element | undefined => {
+        if (programs.length === 0) {
+            return (
+                <InfoBox
+                    style={{ margin: 20 }}
+                    text={`It seems you don't have any programs yet.\nGo to Program tab to create one !`}
+                />
+            );
+        }
+    };
 
     return (
-        <View style={styles.viewContainer}>
-            <HeaderBar></HeaderBar>
-            <Text>Workout Screen</Text>
+        <View
+            style={{
+                ...styles.viewContainer,
+                backgroundColor: theme.colors.surface,
+            }}
+        >
+            <HeaderBar navigation={navigation}></HeaderBar>
 
-            <Text>My exercises :</Text>
-            <Text>{sortedExercises}</Text>
+            {/* TODO : add title */}
+
+            <View style={{ height: 180 }}>
+                {NoProgramMessage()}
+            </View>
+
+            <Button
+                style={styles.workoutBtn}
+                contentStyle={{ height: 100 }}
+                mode="contained"
+                onPress={() => setProgramSelectorVisible(true)}
+                disabled={programs.length === 0}
+            >
+                START WORKOUT
+            </Button>
+
+            <ProgramSelector
+                programs={programs}
+                visible={programSelectorVisible}
+                hideHandler={() => setProgramSelectorVisible(false)}
+            />
+
             <View style={styles.bottomImageContainer}>
                 <Image
                     source={require('../assets/toji.png')}
@@ -43,7 +82,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     toji: {
-        marginRight: 70,
-        height: 230,
+        marginRight: 100,
+        height: 280,
+    },
+    workoutBtn: {
+        borderRadius: 5,
+        marginVertical: 20,
+        marginHorizontal: 50,
+    },
+    noProgramText: {
+        fontSize: 12,
+        fontStyle: 'italic',
+        margin: 20,
     },
 });

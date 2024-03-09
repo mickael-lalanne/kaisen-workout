@@ -7,6 +7,7 @@ export class Program extends Realm.Object {
     image!: string;
     sets!: Realm.List<Set>;
     creationDate: Date = new Date();
+    lastUsageDate: Date = new Date();
 
     static primaryKey = '_id';
 }

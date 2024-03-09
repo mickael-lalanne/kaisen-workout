@@ -37,9 +37,9 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
 
         switch (routeName) {
             case EScreens.Workout:
-                return 'Perform like Toji ⚔️';
+                return '⚔️  Perform like Toji';
             case EScreens.Progression:
-                return 'Analyze like Nanami 🤓';
+                return '📈  Analyze like Nanami';
             case EScreens.ProgramBuilder:
                 return 'Program Creation';
             case EScreens.Exercises:
@@ -47,7 +47,7 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
             case EScreens.Program:
             case EScreens.ProgramHome:
             default:
-                return 'Become strong like Gojo 💪';
+                return '👑  Outclass like Gojo';
         }
     };
 

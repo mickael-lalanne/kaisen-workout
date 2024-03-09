@@ -3,37 +3,21 @@ import { Divider, Text, TouchableRipple } from 'react-native-paper';
 import React, { useState } from 'react';
 import { Program } from '../../models/Program';
 import { useAppTheme } from '../../app/theme';
-import { EScreens, RouterProps } from '../../app/router';
-import { useRealm } from '@realm/react';
-import ConfirmDialog from '../shared/ConfirmDialog';
 
 export type ProgramViewerProps = {
     programs: Realm.Results<Program>;
-    navigation: RouterProps['navigation'];
+    pressHandler: (program: Program) => void;
+    longPressHandler?: (program: Program) => void;
 };
 
 export default function ProgramViewer({
-    navigation,
     programs,
+    pressHandler,
+    longPressHandler,
 }: ProgramViewerProps) {
     const [isScrolling, setIsScrolling] = useState<boolean>(false);
-    const [programToDelete, setProgramToDelete] = useState<Program>();
 
     const theme = useAppTheme();
-    const realm = useRealm();
-
-    const deleteProgram = (): void => {
-        if (programToDelete) {
-            realm.write(() => {
-                const program = realm.objectForPrimaryKey(
-                    Program,
-                    programToDelete._id
-                );
-                realm.delete(program);
-            });
-            setProgramToDelete(undefined);
-        }
-    };
 
     const ProgramList = (): React.JSX.Element[] => {
         const programElements: React.JSX.Element[] = [];
@@ -45,17 +29,12 @@ export default function ProgramViewer({
                 return <Divider style={styles.divider} />;
             }
         };
-
         programs.forEach((p: Program, i: number) => {
             programElements.push(
                 <View style={{ flexDirection: 'row' }} key={p._id.toString()}>
                     <TouchableRipple
-                        onPress={() =>
-                            navigation.navigate(EScreens.ProgramBuilder, {
-                                programId: p._id.toString(),
-                            })
-                        }
-                        onLongPress={() => setProgramToDelete(p)}
+                        onPress={() => pressHandler(p)}
+                        onLongPress={() => longPressHandler && longPressHandler(p)}
                         background={
                             isScrolling ? 'rgba(0, 0, 0, 0)' : undefined
                         }
@@ -105,13 +84,6 @@ export default function ProgramViewer({
                 {ProgramList()}
             </ScrollView>
 
-            <ConfirmDialog
-                visible={!!programToDelete}
-                title={`⚠️ Delete ${programToDelete?.name} program ?`}
-                content="Be carefull. Deleting the program will remove all the sets and the sessions associated with it."
-                confirmHandler={deleteProgram}
-                cancelHandler={() => setProgramToDelete(undefined)}
-            />
         </View>
     );
 }
