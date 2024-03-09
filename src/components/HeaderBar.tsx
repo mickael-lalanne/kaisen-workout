@@ -37,7 +37,10 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
 
         switch (routeName) {
             case EScreens.Workout:
+            case EScreens.WorkoutHome:
                 return '⚔️  Perform like Toji';
+            case EScreens.WorkoutSession:
+                return 'Session in progress';
             case EScreens.Progression:
                 return '📈  Analyze like Nanami';
             case EScreens.ProgramBuilder:

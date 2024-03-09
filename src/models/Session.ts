@@ -4,9 +4,10 @@ export class Session extends Realm.Object {
     _id: BSON.ObjectId = new BSON.ObjectId();
     programId!: BSON.ObjectId;
     date!: Date;
-    note!: string;
+    note?: string;
+    inProgress!: boolean;
 
-    sets!: SessionSet[];
+    sets?: SessionSet[];
 
     static primaryKey = '_id';
 }

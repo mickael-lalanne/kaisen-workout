@@ -3,18 +3,38 @@ import { Dialog, Portal } from 'react-native-paper';
 import React from 'react';
 import { Program } from '../../models/Program';
 import ProgramViewer from '../shared/ProgramViewer';
+import { EScreens, RouterProps } from '../../app/router';
+import { useRealm } from '@realm/react';
+import { Session } from '../../models/Session';
 
 export type ProgramSelectorProps = {
     programs: Realm.Results<Program>;
     visible: boolean;
     hideHandler: () => void;
+    navigation: RouterProps['navigation'];
 };
 
 export default function ProgramSelector({
     programs,
     visible,
     hideHandler,
+    navigation
 }: ProgramSelectorProps) {
+    const realm = useRealm();
+
+    const selectProgram = (program: Program) => {
+        realm.write(() => {
+            realm.create(Session, {
+                programId: program._id,
+                date: new Date(),
+                inProgress: true,
+            });
+        });
+
+        navigation.navigate(EScreens.WorkoutSession);
+        hideHandler();
+    };
+
     return (
         <Portal>
             <Dialog visible={visible} onDismiss={hideHandler} style={{margin: 0}}>
@@ -24,7 +44,7 @@ export default function ProgramSelector({
                 <Dialog.Content>
                     <ProgramViewer
                         programs={programs}
-                        pressHandler={() => {}}
+                        pressHandler={selectProgram}
                     />
                 </Dialog.Content>
             </Dialog>
