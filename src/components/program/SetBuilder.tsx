@@ -45,6 +45,10 @@ export default function SetBuilder({
     }, [isSuperset]);
 
     useEffect(() => {
+        setOrder(setsNumber);
+    }, [setsNumber]);
+
+    useEffect(() => {
         if (setToEdit) {
             setId(setToEdit._id);
             setOrder(setToEdit.order);
@@ -113,6 +117,7 @@ export default function SetBuilder({
     };
 
     const _resetState = (): void => {
+        setId(new BSON.ObjectId());
         setNotes('');
         setRecupDuration(DEFAULT_RECUP_DURATION);
         setRepsNumber(DEFAULT_REPS_NUMBER);

@@ -17,9 +17,15 @@ export type SetViewerProps = {
     sets: ISet[];
     deleteHandler: (setId: BSON.ObjectId) => void;
     editHandler: (setToEdit: ISet) => void;
+    reorderHandler: (sets: ISet[]) => void;
 };
 
-export default function SetViewer({ sets, deleteHandler, editHandler }: SetViewerProps) {
+export default function SetViewer({
+    sets,
+    deleteHandler,
+    editHandler,
+    reorderHandler,
+}: SetViewerProps) {
     const [draggableSetsLists, setDraggableSetsLists] = useState<ISet[]>(sets);
 
     useEffect(() => {
@@ -32,8 +38,9 @@ export default function SetViewer({ sets, deleteHandler, editHandler }: SetViewe
     const onSetDragEnd = (draggedSets: ISet[]) => {
         const orderedSets: ISet[] = draggedSets.map((s, i) => {
             return { ...s, order: i };
-        });;
+        });
         setDraggableSetsLists(orderedSets);
+        reorderHandler(orderedSets);
     };
 
     const SetImages = (set: ISet): React.JSX.Element[] => {
@@ -65,7 +72,10 @@ export default function SetViewer({ sets, deleteHandler, editHandler }: SetViewe
         const setNameToDisplay: string = exercisesNames.join(' / ');
 
         return (
-            <TouchableRipple onLongPress={drag} onPress={() => editHandler(item)}>
+            <TouchableRipple
+                onLongPress={drag}
+                onPress={() => editHandler(item)}
+            >
                 <View
                     style={{
                         ...styles.setContainer,
@@ -96,7 +106,10 @@ export default function SetViewer({ sets, deleteHandler, editHandler }: SetViewe
     };
 
     return (
-        <NestableScrollContainer style={{ flex: 1, flexGrow: 1, paddingHorizontal: 5 }} contentContainerStyle={{ flex: 0, flexGrow: 0 }}>
+        <NestableScrollContainer
+            style={{ flex: 1, flexGrow: 1, paddingHorizontal: 5 }}
+            contentContainerStyle={{ flex: 0, flexGrow: 0 }}
+        >
             <NestableDraggableFlatList
                 data={draggableSetsLists}
                 onDragEnd={({ data }) => onSetDragEnd(data)}
@@ -130,6 +143,6 @@ const styles = StyleSheet.create({
     setDeleteBtn: {
         position: 'absolute',
         top: -10,
-        right: -10
+        right: -10,
     },
 });

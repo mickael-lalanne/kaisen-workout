@@ -200,6 +200,7 @@ export default function ProgramBuilderScreen({
                     sets={programSets}
                     deleteHandler={deleteSet}
                     editHandler={editSet}
+                    reorderHandler={(newSets: ISet[]) => setProgramSets(newSets)}
                 />
 
                 <SetBuilder
