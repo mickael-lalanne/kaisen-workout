@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import { List, Text } from 'react-native-paper';
+import { List } from 'react-native-paper';
 import { useQuery } from '@realm/react';
 import { Set } from '../../models/Program';
 import { useAppTheme } from '../../app/theme';
@@ -54,7 +54,8 @@ export default function SessionSetItem({ set }: SessionSetItemProps) {
                     label={ORDINAL_NUMBER[i] + ' rep'}
                     changeHandler={() => {}}
                     alert
-                />);
+                />
+            );
         }
 
         return reps;
@@ -71,11 +72,14 @@ export default function SessionSetItem({ set }: SessionSetItemProps) {
                     round
                 />
             )}
-            style={{ backgroundColor: theme.colors.elevation.level5, }}
+            style={{
+                backgroundColor: theme.colors.elevation.level5,
+                paddingLeft: 10,
+                borderTopColor: theme.colors.elevation.level2,
+                borderTopWidth: 1,
+            }}
         >
-            <View style={styles.setContainer}>
-                {SetReps()}
-            </View>
+            <View style={styles.setContainer}>{SetReps()}</View>
         </List.Accordion>
     );
 }
@@ -90,6 +94,6 @@ const styles = StyleSheet.create({
         paddingRight: 5,
     },
     repNumber: {
-        width: 79
+        width: 79,
     },
 });

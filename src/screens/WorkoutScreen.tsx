@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { useEffect } from 'react';
 import { ESessionState, Session } from '../models/Session';
 import { useQuery } from '@realm/react';
+import { getFocusedRouteNameFromRoute, useRoute } from '@react-navigation/native';
 
 export default function WorkoutScreen({ navigation }: RouterProps) {
     const Stack = createStackNavigator();
@@ -14,16 +15,19 @@ export default function WorkoutScreen({ navigation }: RouterProps) {
     const session: Session | undefined = useQuery(Session, (collection) =>
         collection.sorted('date').filtered('state == $0', ESessionState.InProgress) 
     ).at(0);
+    const route = useRoute();
 
     useEffect(() => {
-        
-    }, []);
+        if (session && getFocusedRouteNameFromRoute(route) !== EScreens.WorkoutSession) {
+            navigation.navigate(EScreens.WorkoutSession);
+        }
+    }, [session]);
 
     return (
         <View style={styles.viewContainer}>
             <HeaderBar navigation={navigation}></HeaderBar>
 
-            <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={session ? EScreens.WorkoutSession : EScreens.WorkoutHome}>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen
                     name={EScreens.WorkoutHome}
                     component={WorkoutHomeScreen}

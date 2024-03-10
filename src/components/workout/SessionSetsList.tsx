@@ -18,7 +18,7 @@ export default function SessionSetsList({ sets }: SessionSetsListProps) {
         return list;
     };
 
-    return <List.Section>{SetsList()}</List.Section>;
+    return <List.Section style={{ marginTop: 0}}>{SetsList()}</List.Section>;
 }
 
 const styles = StyleSheet.create({});
