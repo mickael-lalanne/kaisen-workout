@@ -1,6 +1,6 @@
 import { View, StyleSheet, Image, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Dialog, Divider, HelperText, IconButton, Portal, Switch, Text, TextInput, TouchableRipple } from 'react-native-paper';
+import { Dialog, Divider, IconButton, Portal, Switch, Text, TextInput, TouchableRipple } from 'react-native-paper';
 import { BSON } from 'realm';
 import { Exercise } from '../../models/Exercise';
 import { ISet } from '../../models/Program';

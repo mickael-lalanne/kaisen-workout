@@ -18,6 +18,8 @@ export class Set extends Realm.Object  {
     repsNumber!: number;
     order!: number;
     exerciceIds!: Realm.List<string>;
+
+    static primaryKey = '_id';
 }
 
 export interface ISet {

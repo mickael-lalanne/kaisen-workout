@@ -7,10 +7,11 @@ import { Exercise } from '../../models/Exercise';
 import { BSON } from 'realm';
 import ExerciseImage from '../shared/ExerciseImage';
 import NumberInput from '../shared/NumberInput';
+import { useAppSelector } from '../../app/hooks';
+import { selectActiveSet } from '../../features/currentSession';
 
 type SessionSetItemProps = {
     set: Set;
-    active?: BSON.ObjectId;
     pressHandler: (set: Set) => void;
     longPressHandler: (set: Set) => void;
 };
@@ -30,11 +31,11 @@ const ORDINAL_NUMBER: string[] = [
 
 export default function SessionSetItem({
     set,
-    active,
     pressHandler,
     longPressHandler,
 }: SessionSetItemProps) {
     const theme = useAppTheme();
+    const activeSet: string | undefined = useAppSelector(selectActiveSet);
 
     const exerciceIds: BSON.ObjectId[] = set.exerciceIds.map(
         (e) => new BSON.ObjectId(e)
@@ -86,7 +87,7 @@ export default function SessionSetItem({
                 borderTopColor: theme.colors.elevation.level2,
                 borderTopWidth: 1,
             }}
-            expanded={active?.toString() === set._id.toString()}
+            expanded={activeSet === set._id.toString()}
             onPress={() => pressHandler(set)}
             onLongPress={() => longPressHandler(set)}
         >

@@ -2,25 +2,25 @@ import { StyleSheet } from 'react-native';
 import { List } from 'react-native-paper';
 import { Set } from '../../models/Program';
 import SessionSetItem from './SessionSetItem';
-import { useState } from 'react';
+import { useAppDispatch } from '../../app/hooks';
+import { setActiveSet } from '../../features/currentSession';
 
 type SessionSetsListProps = {
     sets: Realm.List<Set>;
 };
 
 export default function SessionSetsList({ sets }: SessionSetsListProps) {
-    const [activeSet, setActiveSet] = useState<Set | undefined>(undefined);
+    const dispatch = useAppDispatch();
 
     const SetsList = (): React.JSX.Element[] => {
         const list: React.JSX.Element[] = [];
 
-        sets.forEach((set, index) => {
+        sets.forEach((set) => {
             list.push(
                 <SessionSetItem
                     set={set}
                     key={set._id.toString()}
-                    active={activeSet?._id}
-                    pressHandler={(set) => setActiveSet(set)}
+                    pressHandler={(set) => dispatch(setActiveSet(set._id.toString()))}
                     longPressHandler={(set) => {}}
                 />
             );

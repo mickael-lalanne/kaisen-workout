@@ -10,6 +10,7 @@ type NumberInputProps = {
     style?: object;
     inputStyle?: object;
     alert?: boolean;
+    dense?: boolean;
 };
 
 export default function NumberInput({
@@ -19,6 +20,7 @@ export default function NumberInput({
     style,
     inputStyle,
     alert,
+    dense
 }: NumberInputProps) {
     const [localValue, setLocalValue] = useState<string>('');
     const [error, setError] = useState<boolean>(false);
@@ -81,6 +83,7 @@ export default function NumberInput({
                 value={localValue}
                 onChangeText={onChange}
                 style={inputStyle}
+                dense={dense}
             />
             {Error()}
         </View>

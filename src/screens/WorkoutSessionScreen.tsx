@@ -4,6 +4,7 @@ import { useObject, useQuery } from '@realm/react';
 import { ESessionState, Session } from '../models/Session';
 import { Program } from '../models/Program';
 import SessionSetsList from '../components/workout/SessionSetsList';
+import RestTimer from '../components/workout/RestTimer';
 
 export default function WorkoutSessionScreen() {
     const session: Session = useQuery(Session, (collection) =>
@@ -28,6 +29,10 @@ export default function WorkoutSessionScreen() {
             }}
         >
             {SetsList()}
+
+            <View style={{ flex: 1 }}></View>
+
+            <RestTimer />
         </View>
     );
 }
