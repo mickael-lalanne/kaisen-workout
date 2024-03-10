@@ -1,5 +1,5 @@
 import { useQuery } from '@realm/react';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { IconButton, Text, TouchableRipple } from 'react-native-paper';
 import { Exercise } from '../../models/Exercise';
 import React, { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ import {
 } from 'react-native-draggable-flatlist';
 import { SET_HEIGHT } from '../../app/styles';
 import { BSON } from 'realm';
+import ExerciseImage from '../shared/ExerciseImage';
 
 export type SetViewerProps = {
     sets: ISet[];
@@ -43,26 +44,6 @@ export default function SetViewer({
         reorderHandler(orderedSets);
     };
 
-    const SetImages = (set: ISet): React.JSX.Element[] => {
-        const imagesElements: React.JSX.Element[] = [];
-
-        set.exerciceIds.forEach((eId) => {
-            const setExercise: Exercise = exercises.find(
-                (e) => e._id.toString() === eId.toString()
-            )!;
-
-            imagesElements.push(
-                <Image
-                    style={styles.exerciseImage}
-                    source={{ uri: setExercise.image }}
-                    key={eId.toString()}
-                ></Image>
-            );
-        });
-
-        return imagesElements;
-    };
-
     const renderSet = ({ item, drag, isActive }: RenderItemParams<ISet>) => {
         const exercisesNames: string[] = item.exerciceIds.map(
             (eId) =>
@@ -85,7 +66,12 @@ export default function SetViewer({
                             : undefined,
                     }}
                 >
-                    {SetImages(item)}
+                    <ExerciseImage
+                        exercises={exercises.filter((e) =>
+                            item.exerciceIds.includes(e._id.toString())
+                        )}
+                        size={SET_HEIGHT - 2}
+                    />
                     <View style={{ alignItems: 'center', flex: 1 }}>
                         <Text style={styles.setName}>{setNameToDisplay}</Text>
                         <Text style={styles.setDescription}>
@@ -127,11 +113,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 5,
         height: SET_HEIGHT,
-    },
-    exerciseImage: {
-        height: SET_HEIGHT - 2,
-        width: SET_HEIGHT - 2,
-        objectFit: 'cover',
     },
     setName: {
         fontWeight: 'bold',

@@ -1,6 +1,5 @@
 import { View, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-paper';
-import HeaderBar from '../components/HeaderBar';
 import { RouterProps } from '../app/router';
 import { useAppTheme } from '../app/theme';
 import ProgramSelector from '../components/workout/ProgramSelector';

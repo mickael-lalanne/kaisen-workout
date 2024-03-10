@@ -5,7 +5,7 @@ import { Program } from '../../models/Program';
 import ProgramViewer from '../shared/ProgramViewer';
 import { EScreens, RouterProps } from '../../app/router';
 import { useRealm } from '@realm/react';
-import { Session } from '../../models/Session';
+import { ESessionState, Session } from '../../models/Session';
 
 export type ProgramSelectorProps = {
     programs: Realm.Results<Program>;
@@ -27,7 +27,7 @@ export default function ProgramSelector({
             realm.create(Session, {
                 programId: program._id,
                 date: new Date(),
-                inProgress: true,
+                state: ESessionState.InProgress,
             });
         });
 
