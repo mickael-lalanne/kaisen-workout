@@ -10,6 +10,9 @@ import NumberInput from '../shared/NumberInput';
 
 type SessionSetItemProps = {
     set: Set;
+    active?: BSON.ObjectId;
+    pressHandler: (set: Set) => void;
+    longPressHandler: (set: Set) => void;
 };
 
 const ORDINAL_NUMBER: string[] = [
@@ -25,7 +28,12 @@ const ORDINAL_NUMBER: string[] = [
     '10th',
 ];
 
-export default function SessionSetItem({ set }: SessionSetItemProps) {
+export default function SessionSetItem({
+    set,
+    active,
+    pressHandler,
+    longPressHandler,
+}: SessionSetItemProps) {
     const theme = useAppTheme();
 
     const exerciceIds: BSON.ObjectId[] = set.exerciceIds.map(
@@ -78,6 +86,9 @@ export default function SessionSetItem({ set }: SessionSetItemProps) {
                 borderTopColor: theme.colors.elevation.level2,
                 borderTopWidth: 1,
             }}
+            expanded={active?.toString() === set._id.toString()}
+            onPress={() => pressHandler(set)}
+            onLongPress={() => longPressHandler(set)}
         >
             <View style={styles.setContainer}>{SetReps()}</View>
         </List.Accordion>
