@@ -7,6 +7,7 @@ import { ISet } from '../../models/Program';
 import ExercicePicker from './ExercisePicker';
 import { useQuery } from '@realm/react';
 import { useAppTheme } from '../../app/theme';
+import NumberInput from '../shared/NumberInput';
 
 export type SetBuilderProps = {
     visible: boolean;
@@ -33,8 +34,6 @@ export default function SetBuilder({
     const [order, setOrder] = useState<number>(setsNumber);
     const [isSuperset, setIsSuperset] = useState<boolean>(false);
     const [exerciceIds, setExerciceIds] = useState<string[]>([]);
-    const [repsNumberError, setRepsNumberError] = useState<boolean>(false);
-    const [recupDurationError, setRecupDurationError] = useState<boolean>(false);
     const [exercisePickerVisible, setExercisePickerVisible] = useState<boolean>(false);
 
     // When isSuperset option goes back to false, keep only the first exercise 
@@ -88,32 +87,6 @@ export default function SetBuilder({
         saveHandler(setToAdd);
         _resetState();
         hideBuilder();
-    };
-
-    const onRepsNumberChange = (repNumber: string): void => {
-        // Check if reps number contains only digits
-        let isNum = /^\d+$/.test(repNumber);
-        if (!isNum) {
-            setRepsNumberError(true);
-            setTimeout(() => {
-                setRepsNumberError(false);
-            }, 2000);
-        }
-
-        setRepsNumber(repNumber.replace(/[^0-9]/g, ''));
-    };
-
-    const onRecupDurationChange = (recupDuration: string): void => {
-        // Check if recupDuration number contains only digits
-        let isNum = /^\d+$/.test(recupDuration);
-        if (!isNum) {
-            setRecupDurationError(true);
-            setTimeout(() => {
-                setRecupDurationError(false);
-            }, 2000);
-        }
-
-        setRecupDuration(recupDuration.replace(/[^0-9]/g, ''));
     };
 
     const _resetState = (): void => {
@@ -220,23 +193,19 @@ export default function SetBuilder({
                         style={{ marginTop: 20 }}
                     />
                     <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                        <View style={{ flex: 1, marginRight: 2.5 }}>
-                            <TextInput label="Reps number" value={repsNumber} onChangeText={onRepsNumberChange} />
-                            <HelperText type="error" visible={repsNumberError}>
-                                Number only
-                            </HelperText>
-                        </View>
-                        <View style={{ flex: 1.3, marginLeft: 2.5 }}>
-                            <TextInput
-                                label="Recup duration (s)"
-                                value={recupDuration}
-                                onChangeText={onRecupDurationChange}
-                                style={{ minWidth: 20 }}
-                            />
-                            <HelperText type="error" visible={recupDurationError}>
-                                Number only
-                            </HelperText>
-                        </View>
+                        <NumberInput
+                            label="Reps number"
+                            value={repsNumber}
+                            changeHandler={(value) => setRepsNumber(value)}
+                            style={{ flex: 1, marginRight: 2.5 }}
+                        />
+                        <NumberInput
+                            label="Recup duration (s)"
+                            value={recupDuration}
+                            changeHandler={(value) => setRecupDuration(value)}
+                            style={{ flex: 1.3, marginLeft: 2.5 }}
+                            inputStyle={{ minWidth: 20 }}
+                        />
                     </View>
                     <ExercicePicker
                         visible={exercisePickerVisible}

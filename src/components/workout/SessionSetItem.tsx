@@ -6,10 +6,24 @@ import { useAppTheme } from '../../app/theme';
 import { Exercise } from '../../models/Exercise';
 import { BSON } from 'realm';
 import ExerciseImage from '../shared/ExerciseImage';
+import NumberInput from '../shared/NumberInput';
 
 type SessionSetItemProps = {
     set: Set;
 };
+
+const ORDINAL_NUMBER: string[] = [
+    '1st',
+    '2nd',
+    '3rd',
+    '4th',
+    '5th',
+    '6th',
+    '7th',
+    '8th',
+    '9th',
+    '10th',
+];
 
 export default function SessionSetItem({ set }: SessionSetItemProps) {
     const theme = useAppTheme();
@@ -28,6 +42,24 @@ export default function SessionSetItem({ set }: SessionSetItemProps) {
         return exercisesNames.join(' / ');
     };
 
+    const SetReps = (): React.JSX.Element[] => {
+        const reps: React.JSX.Element[] = [];
+
+        for (let i = 0; i < set.repsNumber; i++) {
+            reps.push(
+                <NumberInput
+                    key={i}
+                    value={i.toString()}
+                    style={styles.repNumber}
+                    label={ORDINAL_NUMBER[i] + ' rep'}
+                    changeHandler={() => {}}
+                    alert
+                />);
+        }
+
+        return reps;
+    };
+
     return (
         <List.Accordion
             title={_getExerciceName()}
@@ -39,13 +71,25 @@ export default function SessionSetItem({ set }: SessionSetItemProps) {
                     round
                 />
             )}
-            style={{ backgroundColor: theme.colors.elevation.level5 }}
+            style={{ backgroundColor: theme.colors.elevation.level5, }}
         >
-            <View>
-                <Text>Todo...</Text>
+            <View style={styles.setContainer}>
+                {SetReps()}
             </View>
         </List.Accordion>
     );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    setContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 5,
+        paddingVertical: 5,
+        paddingLeft: 5,
+        paddingRight: 5,
+    },
+    repNumber: {
+        width: 79
+    },
+});
