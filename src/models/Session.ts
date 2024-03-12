@@ -22,7 +22,6 @@ export enum ESessionSetState {
     NotStarted = 'NotStarted',
     InProgress = 'InProgress',
     Done = 'Done',
-    Canceled = 'Canceled',
 };
 
 export class SessionSet extends Realm.Object {

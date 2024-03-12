@@ -98,6 +98,8 @@ export const LIGHT_THEME = {
         ...COMMON_COLORS,
         text: 'black',
         background: 'white',
+        success: '#5cb85c',
+        inProgress: '#FFEA00',
     },
 };
 
@@ -107,7 +109,9 @@ export const DARK_THEME = {
         ...DARK_THEME_COLORS,
         ...COMMON_COLORS,
         text: 'white',
-        background: 'black'
+        background: 'black',
+        success: '#254520',
+        inProgress: '#FFC30B',
     },
 };
 

@@ -9,6 +9,7 @@ type NumberInputProps = {
     label: string;
     style?: object;
     inputStyle?: object;
+    contentStyle?: object;
     alert?: boolean;
     dense?: boolean;
     noError?: boolean;
@@ -20,6 +21,7 @@ export default function NumberInput({
     label,
     style,
     inputStyle,
+    contentStyle,
     alert,
     dense,
     noError
@@ -85,6 +87,7 @@ export default function NumberInput({
                 value={localValue}
                 onChangeText={onChange}
                 style={inputStyle}
+                contentStyle={contentStyle}
                 dense={dense}
             />
             {Error()}

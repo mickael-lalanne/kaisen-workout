@@ -7,6 +7,7 @@ import {
     SessionSet,
 } from '../../models/Session';
 import { useEffect, useState } from 'react';
+import { useAppTheme } from '../../app/theme';
 
 const ORDINAL_NUMBER: string[] = [
     '1st',
@@ -27,16 +28,17 @@ type SessionRepProps = {
 };
 
 export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
-    const [localWeight, setLocalWeight] = useState<number>();
+    const [localWeight, setLocalWeight] = useState<number>(0);
 
     const realm = useRealm();
+    const theme = useAppTheme();
 
     const rep: SessionRepModel | null = useObject(SessionRepModel, repId);
     const sessionSet: SessionSet | null = useObject(SessionSet, sessionSetId);
 
     useEffect(() => {
         setLocalWeight(rep?.weight || 0);
-    }, [repId])
+    }, [repId]);
 
     const onWeightInputChange = (textWeight: string) => {
         if (!sessionSet) {
@@ -56,6 +58,15 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
         <NumberInput
             value={localWeight === 0 ? '' : localWeight?.toString() || ''}
             style={styles.repNumber}
+            contentStyle={{ paddingLeft: 10 }}
+            inputStyle={{
+                backgroundColor:
+                    localWeight > 0
+                        ? theme.colors.success
+                        : theme.colors.elevation.level2,
+                paddingLeft: 0,
+                marginLeft: 0,
+            }}
             label={ORDINAL_NUMBER[rep?.order!] + ' rep'}
             changeHandler={(textWeight) => onWeightInputChange(textWeight)}
             noError
@@ -66,6 +77,6 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
 const styles = StyleSheet.create({
     repsContainer: {},
     repNumber: {
-        width: 79,
+        width: 86,
     },
 });
