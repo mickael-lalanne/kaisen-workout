@@ -21,11 +21,11 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     const onProgramSelected = (program: Program) => {
         realm.write(() => {
             const defaultSessionSets: SessionSet[] = [];
-            const defaultSessionReps: SessionRep[] = [];
 
             // TODO: make a Session Service with a InitSession method
             // First, we create all the reps for each set
             program.sets.forEach((set: Set) => {
+                const defaultSessionReps: SessionRep[] = [];
                 for (let i = 0; i < set.repsNumber; i++) {
                     set.exerciceIds.forEach((exerciceId: string) => {
                         const rep: SessionRep = realm.create(SessionRep, {
