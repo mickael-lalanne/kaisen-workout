@@ -15,6 +15,9 @@ import {
     useRoute,
 } from '@react-navigation/native';
 import { EScreens, RouterProps } from '../app/router';
+import ConfirmDialog from './shared/ConfirmDialog';
+import { useQuery, useRealm } from '@realm/react';
+import { ESessionState, Session } from '../models/Session';
 
 interface HeaderBarProps {
     navigation: RouterProps['navigation'];
@@ -22,11 +25,18 @@ interface HeaderBarProps {
 
 export default function HeaderBar({ navigation }: HeaderBarProps) {
     const [visible, setVisible] = useState<boolean>(false);
+    const [cancelSession, setCancelSession] = useState<boolean>(false);
 
     const darkMode: boolean = useAppSelector(selectDarkMode);
     const dispatch = useAppDispatch();
     const route = useRoute();
     const theme = useTheme();
+    const realm = useRealm();
+
+    // TODO : duplicate code
+    const session: Session | undefined = useQuery(Session, (collection) =>
+        collection.sorted('date').filtered('state == $0', ESessionState.InProgress) 
+    ).at(0);
 
     const openMenu = () => setVisible(true);
 
@@ -58,15 +68,29 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
         return (getFocusedRouteNameFromRoute(route) ?? route.name) as EScreens;
     };
 
+    const confirmCancelSession = () => {
+        realm.write(() => {
+            if (session) {
+                session.state = ESessionState.Canceled;
+            }
+            navigation.navigate(EScreens.Workout);
+        });
+    };
+
     const GoBackIcon = (): React.JSX.Element | undefined => {
         const routeName: EScreens = _getRouteName();
 
         const showBackIcon =
             routeName === EScreens.ProgramBuilder ||
-            routeName === EScreens.Exercises;
+            routeName === EScreens.Exercises ||
+            routeName === EScreens.WorkoutSession;
+
+        const pressHandler = routeName === EScreens.WorkoutSession
+            ? () => setCancelSession(true)
+            : () => navigation.goBack();
 
         if (showBackIcon) {
-            return <Appbar.BackAction onPress={() => navigation.goBack()} />;
+            return <Appbar.BackAction onPress={() => pressHandler()} />;
         }
     };
 
@@ -100,6 +124,14 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
                     </View>
                 </TouchableRipple>
             </Menu>
+
+            <ConfirmDialog
+                visible={cancelSession}
+                cancelHandler={() => setCancelSession(false)}
+                title="Cancel session"
+                content="Are you sure you want to cancel the current session ?"
+                confirmHandler={confirmCancelSession}
+            />
         </Appbar.Header>
     );
 }

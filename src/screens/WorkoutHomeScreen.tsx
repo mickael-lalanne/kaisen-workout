@@ -1,12 +1,14 @@
 import { View, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-paper';
-import { RouterProps } from '../app/router';
+import { EScreens, RouterProps } from '../app/router';
 import { useAppTheme } from '../app/theme';
 import ProgramSelector from '../components/workout/ProgramSelector';
 import { useState } from 'react';
-import { useQuery } from '@realm/react';
-import { Program } from '../models/Program';
+import { useQuery, useRealm } from '@realm/react';
+import { BSON } from 'realm';
+import { Program, Set } from '../models/Program';
 import InfoBox from '../components/shared/InfoBox';
+import { ESessionSetState, ESessionState, Session, SessionRep, SessionSet } from '../models/Session';
 
 export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     const [programSelectorVisible, setProgramSelectorVisible] =
@@ -14,6 +16,51 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
 
     const theme = useAppTheme();
     const programs = useQuery(Program);
+    const realm = useRealm();
+
+    const onProgramSelected = (program: Program) => {
+        realm.write(() => {
+            const defaultSessionSets: SessionSet[] = [];
+            const defaultSessionReps: SessionRep[] = [];
+
+            // TODO: make a Session Service with a InitSession method
+            // First, we create all the reps for each set
+            program.sets.forEach((set: Set) => {
+                for (let i = 0; i < set.repsNumber; i++) {
+                    set.exerciceIds.forEach((exerciceId: string) => {
+                        const rep: SessionRep = realm.create(SessionRep, {
+                            exerciseId: new BSON.ObjectId(exerciceId),
+                            order: i,
+                            note: '',
+                            weight: 0
+                        });
+                        defaultSessionReps.push(rep);
+                    });
+                }
+                // Then we create all program sets with their reps
+                const sessionSet: SessionSet = realm.create(SessionSet, {
+                    setId: set._id,
+                    order: set.order,
+                    exerciceIds: set.exerciceIds.map(e => new BSON.ObjectId(e)),
+                    state: ESessionSetState.NotStarted,
+                    recupDuration: set.recupDuration,
+                    note: '', // TODO,
+                    reps: defaultSessionReps,
+                });
+                defaultSessionSets.push(sessionSet);
+            });
+            // Finally, we can create the session
+            realm.create(Session, {
+                programId: program._id,
+                date: new Date(),
+                state: ESessionState.InProgress,
+                sets: defaultSessionSets,
+            });
+        });
+
+        navigation.navigate(EScreens.WorkoutSession);
+        setProgramSelectorVisible(false);
+    };
 
     const NoProgramMessage = (): React.JSX.Element | undefined => {
         if (programs.length === 0) {
@@ -51,9 +98,9 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
 
             <ProgramSelector
                 programs={programs}
+                selectHandler={onProgramSelected}
                 visible={programSelectorVisible}
                 hideHandler={() => setProgramSelectorVisible(false)}
-                navigation={navigation}
             />
 
             <View style={styles.bottomImageContainer}>

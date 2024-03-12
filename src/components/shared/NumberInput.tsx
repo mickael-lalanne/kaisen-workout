@@ -11,6 +11,7 @@ type NumberInputProps = {
     inputStyle?: object;
     alert?: boolean;
     dense?: boolean;
+    noError?: boolean;
 };
 
 export default function NumberInput({
@@ -20,7 +21,8 @@ export default function NumberInput({
     style,
     inputStyle,
     alert,
-    dense
+    dense,
+    noError
 }: NumberInputProps) {
     const [localValue, setLocalValue] = useState<string>('');
     const [error, setError] = useState<boolean>(false);
@@ -67,7 +69,7 @@ export default function NumberInput({
                     </View>
                 </Portal>
             );
-        } else if (!alert) {
+        } else if (!alert && !noError) {
             return (
                 <HelperText type="error" visible={error}>
                     Number only

@@ -6,28 +6,16 @@ import { useAppTheme } from '../../app/theme';
 import { Exercise } from '../../models/Exercise';
 import { BSON } from 'realm';
 import ExerciseImage from '../shared/ExerciseImage';
-import NumberInput from '../shared/NumberInput';
 import { useAppSelector } from '../../app/hooks';
 import { selectActiveSet } from '../../features/currentSession';
+import SessionRep from './SessionRep';
+import { ESessionState, Session, SessionSet } from '../../models/Session';
 
 type SessionSetItemProps = {
     set: Set;
     pressHandler: (set: Set) => void;
     longPressHandler: (set: Set) => void;
 };
-
-const ORDINAL_NUMBER: string[] = [
-    '1st',
-    '2nd',
-    '3rd',
-    '4th',
-    '5th',
-    '6th',
-    '7th',
-    '8th',
-    '9th',
-    '10th',
-];
 
 export default function SessionSetItem({
     set,
@@ -36,6 +24,16 @@ export default function SessionSetItem({
 }: SessionSetItemProps) {
     const theme = useAppTheme();
     const activeSet: string | undefined = useAppSelector(selectActiveSet);
+
+    // TODO : duplicate code
+    const sessionSet: SessionSet | undefined = useQuery(Session, (collection) =>
+        collection
+            .sorted('date')
+            .filtered('state == $0', ESessionState.InProgress)
+    )
+        .at(0)
+        ?.sets.filtered('setId == $0', set._id)
+        .at(0);
 
     const exerciceIds: BSON.ObjectId[] = set.exerciceIds.map(
         (e) => new BSON.ObjectId(e)
@@ -53,20 +51,15 @@ export default function SessionSetItem({
 
     const SetReps = (): React.JSX.Element[] => {
         const reps: React.JSX.Element[] = [];
-
-        for (let i = 0; i < set.repsNumber; i++) {
+        sessionSet?.reps.forEach((rep) => {
             reps.push(
-                <NumberInput
-                    key={i}
-                    value={i.toString()}
-                    style={styles.repNumber}
-                    label={ORDINAL_NUMBER[i] + ' rep'}
-                    changeHandler={() => {}}
-                    alert
+                <SessionRep
+                    key={rep._id.toString()}
+                    sessionSetId={sessionSet._id}
+                    repId={rep._id}
                 />
             );
-        }
-
+        });
         return reps;
     };
 
@@ -104,8 +97,5 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingLeft: 5,
         paddingRight: 5,
-    },
-    repNumber: {
-        width: 79,
     },
 });

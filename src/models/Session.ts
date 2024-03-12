@@ -13,13 +13,13 @@ export class Session extends Realm.Object {
     note?: string;
     state!: string; // ESessionState
 
-    sets?: SessionSet[];
+    sets!: Realm.List<SessionSet>;
 
     static primaryKey = '_id';
 }
 
 export enum ESessionSetState {
-    Todo = 'Todo',
+    NotStarted = 'NotStarted',
     InProgress = 'InProgress',
     Done = 'Done',
     Canceled = 'Canceled',
@@ -28,18 +28,23 @@ export enum ESessionSetState {
 export class SessionSet extends Realm.Object {
     _id: BSON.ObjectId = new BSON.ObjectId();
     setId!: BSON.ObjectId;
+    exerciceIds!: Realm.List<BSON.ObjectId>;
     note!: string;
     recupDuration!: number;
     order!: number;
     state!: string; // ESessionSetState
 
-    reps!: SessionRep[];
+    reps!: Realm.List<SessionRep>;
+
+    static primaryKey = '_id';
 }
 
 export class SessionRep extends Realm.Object {
     _id: BSON.ObjectId = new BSON.ObjectId();
-    exerciceId!: BSON.ObjectId;
     note!: string;
+    exerciseId!: BSON.ObjectId;
     order!: number;
     weight!: number;
+
+    static primaryKey = '_id';
 }
