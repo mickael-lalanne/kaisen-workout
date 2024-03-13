@@ -33,3 +33,25 @@ export const formatDuration = (durationInSeconds: number) => {
 
     return timeFormat;
 };
+
+/**
+ * Converts a weight from pounds to pounds.
+ * @param lb - The weight in pounds.
+ * @returns The weight in kilograms.
+ */
+export const convertLbToKg = (lb: number): number => {
+    return roundOneDecimals(lb * 0.453592);
+}
+
+/**
+ * Converts a weight from kilograms to pounds.
+ * @param kg - The weight in kilograms.
+ * @returns The weight in pounds.
+ */
+export const convertKgToLb = (kg: number): number => {
+    return roundOneDecimals(kg * 2.20462);
+}
+
+const roundOneDecimals = (value: number): number => {
+    return Math.round((value + Number.EPSILON) * 10) / 10;
+};

@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingLeft: 5,
         paddingRight: 5,
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
     },
     stateIndicator: {

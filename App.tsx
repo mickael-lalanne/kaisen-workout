@@ -8,12 +8,21 @@ import AppChild from './src/AppChild';
 import { Program } from './src/models/Program';
 import { Set } from './src/models/Program';
 import { Session, SessionRep, SessionSet } from './src/models/Session';
+import { Preferences } from './src/models/Preferences';
 
 export default function App() {
     return (
         // Remove "deleteRealmIfMigrationNeeded" option when the app is released
         <RealmProvider
-            schema={[Program, Exercise, Set, Session, SessionSet, SessionRep]}
+            schema={[
+                Program,
+                Exercise,
+                Set,
+                Session,
+                SessionSet,
+                SessionRep,
+                Preferences,
+            ]}
             deleteRealmIfMigrationNeeded={true}
         >
             <Provider store={store}>

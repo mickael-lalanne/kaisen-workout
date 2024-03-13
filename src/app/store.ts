@@ -1,10 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import preferencesReducer from '../features/preferences';
 import currentSessionReducer from '../features/currentSession';
 
 export const store = configureStore({
     reducer: {
-        preferences: preferencesReducer,
         currentSession: currentSessionReducer,
     },
 });

@@ -11,8 +11,8 @@ import WorkoutScreen from './screens/WorkoutScreen';
 import ProgramScreen from './screens/ProgramScreen';
 import { DARK_THEME, LIGHT_THEME } from './app/theme';
 import { EScreens } from './app/router';
-import { useAppSelector } from './app/hooks';
-import { selectDarkMode } from './features/preferences';
+import { useQuery, useRealm } from '@realm/react';
+import { EWeightUnit, Preferences } from './models/Preferences';
 
 const Tab = createMaterialBottomTabNavigator();
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
@@ -22,7 +22,21 @@ const { LightTheme, DarkTheme } = adaptNavigationTheme({
 
 // An AppChild component is needed to access the preferences stored in redux
 export default function AppChild() {
-    const darkMode: boolean = useAppSelector(selectDarkMode);
+    const realm = useRealm()
+    const preferences: Preferences | undefined = useQuery(Preferences, preferences => preferences).at(0);
+
+    // Init preferences if not set yet
+    if (preferences === undefined) {
+        realm.write(() => {
+            realm.create(Preferences, {
+                darkMode: true,
+                weightUnit: EWeightUnit.KG,
+                userId: '',
+            });
+        });
+    }
+
+    const darkMode: boolean = !preferences || preferences.darkMode ? true : false;
 
     return (
         <PaperProvider theme={darkMode ? DARK_THEME : LIGHT_THEME}>

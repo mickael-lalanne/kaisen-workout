@@ -4,13 +4,12 @@ import {
     Appbar,
     IconButton,
     Menu,
+    RadioButton,
     Switch,
     Text,
     TouchableRipple,
     useTheme,
 } from 'react-native-paper';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { selectDarkMode, setDarkMode } from '../features/preferences';
 import {
     CommonActions,
     getFocusedRouteNameFromRoute,
@@ -20,6 +19,7 @@ import { EScreens, RouterProps } from '../app/router';
 import ConfirmDialog from './shared/ConfirmDialog';
 import { useQuery, useRealm } from '@realm/react';
 import { ESessionState, Session } from '../models/Session';
+import { EWeightUnit, Preferences } from '../models/Preferences';
 
 interface HeaderBarProps {
     navigation: RouterProps['navigation'];
@@ -31,8 +31,6 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
     const [finishSession, setFinishSession] = useState<boolean>(false);
     const [routeName, setRouteName] = useState<EScreens>();
 
-    const darkMode: boolean = useAppSelector(selectDarkMode);
-    const dispatch = useAppDispatch();
     const route = useRoute();
     const theme = useTheme();
     const realm = useRealm();
@@ -44,6 +42,11 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
         collection
             .sorted('date')
             .filtered('state == $0', ESessionState.InProgress)
+    ).at(0);
+
+    const preferences: Preferences | undefined = useQuery(
+        Preferences,
+        (collection) => collection
     ).at(0);
 
     useEffect(() => {
@@ -87,6 +90,22 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
                     routes: [{ name: EScreens.Workout }],
                 })
             );
+        });
+    };
+
+    const setDarkMode = (value: boolean) => {
+        realm.write(() => {
+            if (preferences) {
+                preferences.darkMode = value;
+            }
+        });
+    };
+
+    const setWeightUnit = (value: EWeightUnit) => {
+        realm.write(() => {
+            if (preferences) {
+                preferences.weightUnit = value;
+            }
         });
     };
 
@@ -139,15 +158,40 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
                 }
             >
                 <TouchableRipple
-                    onPress={() => dispatch(setDarkMode(!darkMode))}
+                    onPress={() => setDarkMode(!preferences?.darkMode)}
                 >
                     <View style={styles.preference}>
                         <Text>Dark mode</Text>
                         <View pointerEvents="none">
-                            <Switch value={darkMode} />
+                            <Switch value={preferences?.darkMode} />
                         </View>
                     </View>
                 </TouchableRipple>
+
+                <Text style={styles.menuTitle}>Weight unit</Text>
+                <RadioButton.Group
+                    onValueChange={(value) =>
+                        setWeightUnit(value as EWeightUnit)
+                    }
+                    value={preferences?.weightUnit || EWeightUnit.KG}
+                >
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            paddingLeft: 25,
+                        }}
+                    >
+                        <View style={styles.radioBtnContainer}>
+                            <Text style={styles.radioBtnText}>Kg</Text>
+                            <RadioButton value={EWeightUnit.KG} />
+                        </View>
+                        <View style={styles.radioBtnContainer}>
+                            <Text style={styles.radioBtnText}>Lb</Text>
+                            <RadioButton value={EWeightUnit.LB} />
+                        </View>
+                    </View>
+                </RadioButton.Group>
             </Menu>
 
             <ConfirmDialog
@@ -176,5 +220,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 12,
         paddingHorizontal: 16,
+    },
+    radioBtnContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    radioBtnText: {
+        opacity: 0.7,
+        fontSize: 12,
+        fontStyle: 'italic',
+    },
+    menuTitle: {
+        paddingLeft: 16,
+        marginTop: 5,
     },
 });
