@@ -89,6 +89,7 @@ export default function NumberInput({
                 style={inputStyle}
                 contentStyle={contentStyle}
                 dense={dense}
+                keyboardType="numeric"
             />
             {Error()}
         </View>

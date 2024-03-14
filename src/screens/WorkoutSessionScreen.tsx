@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { useAppTheme } from '../app/theme';
 import { useObject, useQuery } from '@realm/react';
 import { ESessionState, Session } from '../models/Session';
@@ -8,7 +8,9 @@ import RestTimer from '../components/workout/RestTimer';
 
 export default function WorkoutSessionScreen() {
     const session: Session = useQuery(Session, (collection) =>
-        collection.sorted('date').filtered('state == $0', ESessionState.InProgress)
+        collection
+            .sorted('date')
+            .filtered('state == $0', ESessionState.InProgress)
     ).at(0)!;
 
     const program = useObject(Program, session.programId);
@@ -28,9 +30,7 @@ export default function WorkoutSessionScreen() {
                 backgroundColor: theme.colors.surface,
             }}
         >
-            {SetsList()}
-
-            <View style={{ flex: 1 }}></View>
+            <ScrollView>{SetsList()}</ScrollView>
 
             <RestTimer />
         </View>

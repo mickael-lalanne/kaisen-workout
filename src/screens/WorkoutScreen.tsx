@@ -1,5 +1,4 @@
 import { View, StyleSheet } from 'react-native';
-import HeaderBar from '../components/HeaderBar';
 import { EScreens, RouterProps } from '../app/router';
 import WorkoutHomeScreen from './WorkoutHomeScreen';
 import WorkoutSessionScreen from './WorkoutSessionScreen';
@@ -25,8 +24,6 @@ export default function WorkoutScreen({ navigation }: RouterProps) {
 
     return (
         <View style={styles.viewContainer}>
-            <HeaderBar navigation={navigation}></HeaderBar>
-
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen
                     name={EScreens.WorkoutHome}
