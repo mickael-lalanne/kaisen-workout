@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import { useAppTheme } from '../../app/theme';
 import { Text } from 'react-native-paper';
 import { EWeightUnit, Preferences } from '../../models/Preferences';
-import { convertKgToLb, convertLbToKg } from '../../app/utils';
+import { convertKgToLb, convertLbToKg, roundTwoDecimals } from '../../app/utils';
 
 const ORDINAL_NUMBER: string[] = [
     '1st',
@@ -73,7 +73,7 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
             preferences && preferences.weightUnit === EWeightUnit.LB
                 ? convertKgToLb(rep?.weight || 0)
                 : rep?.weight || 0;
-        setLocalWeight(weightToDisplay);
+        setLocalWeight(roundTwoDecimals(weightToDisplay));
     }, [repId]);
 
     useEffect(() => {
@@ -120,7 +120,7 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
                     preferences && preferences.weightUnit === EWeightUnit.LB
                         ? convertKgToLb(lastSessionRep.weight)
                         : lastSessionRep.weight;
-
+                lastSessionRepWeight = roundTwoDecimals(lastSessionRepWeight);
                 return (
                     <Text style={styles.repInfo}>
                         Last : {lastSessionRepWeight} {unitToDisplay}
@@ -136,6 +136,7 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
                 preferences && preferences.weightUnit === EWeightUnit.LB
                     ? convertKgToLb(maxRepWeight)
                     : maxRepWeight;
+            maxRepWeightToDisplay = roundTwoDecimals(maxRepWeightToDisplay);
             return (
                 <Text style={styles.repInfo}>
                     Max : {maxRepWeightToDisplay} {unitToDisplay}

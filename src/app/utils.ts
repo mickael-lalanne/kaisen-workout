@@ -40,7 +40,7 @@ export const formatDuration = (durationInSeconds: number) => {
  * @returns The weight in kilograms.
  */
 export const convertLbToKg = (lb: number): number => {
-    return roundOneDecimals(lb * 0.453592);
+    return lb *0.4535923;
 }
 
 /**
@@ -49,9 +49,17 @@ export const convertLbToKg = (lb: number): number => {
  * @returns The weight in pounds.
  */
 export const convertKgToLb = (kg: number): number => {
-    return roundOneDecimals(kg * 2.20462);
+    return kg *2.2046226218;
 }
 
-const roundOneDecimals = (value: number): number => {
-    return Math.round((value + Number.EPSILON) * 10) / 10;
+/**
+ * Rounds a number to two decimal places.
+ * @param value - The number to be rounded.
+ * @returns The rounded number.
+ */
+export const roundTwoDecimals = (value: number): number => {
+    // Roundoff to the nearest 0.25
+    const inv = 1.0 / 0.25;
+
+    return Math.round(value * inv) / inv;
 };
