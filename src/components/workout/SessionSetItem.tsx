@@ -111,7 +111,9 @@ export default function SessionSetItem({ sessionSet }: SessionSetItemProps) {
                 borderTopWidth: 1,
             }}
             expanded={activeSet === sessionSet._id.toString()}
-            onPress={() => dispatch(setActiveSet(sessionSet._id.toString()))}
+            onPress={() => {
+                dispatch(setActiveSet(sessionSet._id.toString()))
+            }}
             onLongPress={() => setConfirmDelete(true)}
         >
             <View style={styles.setContainer}>{SetReps()}</View>

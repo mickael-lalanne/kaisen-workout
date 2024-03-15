@@ -9,7 +9,6 @@ import {
     setCountdownIntervalId,
     startCountdown,
 } from '../../features/currentSession';
-import { Set } from '../../models/Program';
 import { useObject } from '@realm/react';
 import { IconButton, Text } from 'react-native-paper';
 import { BSON } from 'realm';
@@ -17,6 +16,7 @@ import NumberInput from '../shared/NumberInput';
 import { useEffect, useState } from 'react';
 import { formatDuration } from '../../app/utils';
 import { useAppTheme } from '../../app/theme';
+import { SessionSet } from '../../models/Session';
 
 type RestTimerProps = {};
 
@@ -28,8 +28,8 @@ export default function RestTimer({}: RestTimerProps) {
     const countdownIntervalId: NodeJS.Timeout | undefined = useAppSelector(
         selectCountdownIntervalId
     );
-    const activeSet: Set | null = useObject(
-        Set,
+    const activeSet: SessionSet | null = useObject(
+        SessionSet,
         new BSON.ObjectId(activeSetId)
     );
 
@@ -37,11 +37,11 @@ export default function RestTimer({}: RestTimerProps) {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (activeSet?.recupDuration) {
+        if (activeSet && activeSet.recupDuration) {
             dispatch(setCountdown(activeSet.recupDuration));
             setInitialCountdown(activeSet.recupDuration);
         }
-    }, [activeSet?.recupDuration]);
+    }, [activeSet]);
 
     const PlayPauseIcon = (): React.JSX.Element => {
         if (countdownIntervalId) {

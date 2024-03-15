@@ -4,20 +4,32 @@ import WorkoutHomeScreen from './WorkoutHomeScreen';
 import WorkoutSessionScreen from './WorkoutSessionScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useEffect } from 'react';
-import { ESessionState, Session } from '../models/Session';
+import { Session } from '../models/Session';
 import { useQuery } from '@realm/react';
-import { getFocusedRouteNameFromRoute, useRoute } from '@react-navigation/native';
+import {
+    getFocusedRouteNameFromRoute,
+    useRoute,
+} from '@react-navigation/native';
+import { useAppDispatch } from '../app/hooks';
+import { setCurrentSessionId } from '../features/currentSession';
+import { getInProgressSession } from '../services/SessionService';
 
 export default function WorkoutScreen({ navigation }: RouterProps) {
     const Stack = createStackNavigator();
+    const dispatch = useAppDispatch();
 
-    const session: Session | undefined = useQuery(Session, (collection) =>
-        collection.sorted('date').filtered('state == $0', ESessionState.InProgress) 
+    const session: Session | undefined = useQuery(
+        Session,
+        getInProgressSession
     ).at(0);
     const route = useRoute();
 
     useEffect(() => {
-        if (session && getFocusedRouteNameFromRoute(route) !== EScreens.WorkoutSession) {
+        if (
+            session &&
+            getFocusedRouteNameFromRoute(route) !== EScreens.WorkoutSession
+        ) {
+            dispatch(setCurrentSessionId(session._id.toString()));
             navigation.navigate(EScreens.WorkoutSession);
         }
     }, [session]);

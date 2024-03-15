@@ -1,26 +1,37 @@
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useAppTheme } from '../app/theme';
-import { useObject, useQuery } from '@realm/react';
-import { ESessionState, Session } from '../models/Session';
-import { Program } from '../models/Program';
-import SessionSetsList from '../components/workout/SessionSetsList';
+import { useObject } from '@realm/react';
+import { Session } from '../models/Session';
 import RestTimer from '../components/workout/RestTimer';
+import { selectCurrentSessionId } from '../features/currentSession';
+import { useAppSelector } from '../app/hooks';
+import { List } from 'react-native-paper';
+import { BSON } from 'realm';
+import SessionSetItem from '../components/workout/SessionSetItem';
 
 export default function WorkoutSessionScreen() {
-    const session: Session = useQuery(Session, (collection) =>
-        collection
-            .sorted('date')
-            .filtered('state == $0', ESessionState.InProgress)
-    ).at(0)!;
-
-    const program = useObject(Program, session.programId);
-
     const theme = useAppTheme();
+    const currentSessionId: string | undefined = useAppSelector(
+        selectCurrentSessionId
+    );
 
-    const SetsList = (): React.JSX.Element | undefined => {
-        if (program && program.sets) {
-            return <SessionSetsList sets={program.sets} />;
+    const session: Session | null = useObject(
+        Session,
+        new BSON.ObjectId(currentSessionId)
+    );
+
+    const SetsList = (): React.JSX.Element[] => {
+        const list: React.JSX.Element[] = [];
+
+        if (session) {
+            session.sets.forEach((set) => {
+                list.push(
+                    <SessionSetItem sessionSet={set} key={set._id.toString()} />
+                );
+            });
         }
+
+        return list;
     };
 
     return (
@@ -30,7 +41,11 @@ export default function WorkoutSessionScreen() {
                 backgroundColor: theme.colors.surface,
             }}
         >
-            <ScrollView>{SetsList()}</ScrollView>
+            <ScrollView>
+                <List.Section style={{ marginTop: 0 }}>
+                    {SetsList()}
+                </List.Section>
+            </ScrollView>
 
             <RestTimer />
         </View>

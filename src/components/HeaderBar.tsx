@@ -17,9 +17,15 @@ import {
 } from '@react-navigation/native';
 import { EScreens, RouterProps } from '../app/router';
 import ConfirmDialog from './shared/ConfirmDialog';
-import { useQuery, useRealm } from '@realm/react';
+import { useObject, useQuery, useRealm } from '@realm/react';
 import { ESessionState, Session } from '../models/Session';
 import { EWeightUnit, Preferences } from '../models/Preferences';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import {
+    selectCurrentSessionId,
+    setCurrentSessionId,
+} from '../features/currentSession';
+import { BSON } from 'realm';
 
 interface HeaderBarProps {
     navigation: RouterProps['navigation'];
@@ -34,15 +40,17 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
     const route = useRoute();
     const theme = useTheme();
     const realm = useRealm();
+    const dispatch = useAppDispatch();
+    const currentSessionId: string | undefined = useAppSelector(
+        selectCurrentSessionId
+    );
 
     const BACKGROUND_COLOR = theme.colors.secondaryContainer;
 
-    // TODO : duplicate code
-    const session: Session | undefined = useQuery(Session, (collection) =>
-        collection
-            .sorted('date')
-            .filtered('state == $0', ESessionState.InProgress)
-    ).at(0);
+    const session: Session | null = useObject(
+        Session,
+        new BSON.ObjectId(currentSessionId)
+    );
 
     const preferences: Preferences | undefined = useQuery(
         Preferences,
@@ -82,8 +90,9 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
     const endSession = (state: ESessionState) => {
         realm.write(() => {
             if (session) {
-                session.state = ESessionState.Canceled;
+                session.state = state;
             }
+            dispatch(setCurrentSessionId(undefined));
             navigation.dispatch(
                 CommonActions.reset({
                     index: 0,

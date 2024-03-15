@@ -3,7 +3,6 @@ import { useObject, useQuery, useRealm } from '@realm/react';
 import { BSON } from 'realm';
 import NumberInput from '../shared/NumberInput';
 import {
-    ESessionState,
     Session,
     SessionRep as SessionRepModel,
     SessionSet,
@@ -17,6 +16,12 @@ import {
     convertLbToKg,
     roundTwoDecimals,
 } from '../../app/utils';
+import { selectCurrentSessionId } from '../../features/currentSession';
+import { useAppSelector } from '../../app/hooks';
+import {
+    getLastSession,
+    getMaxSessionRep,
+} from '../../services/SessionService';
 
 const ORDINAL_NUMBER: string[] = [
     '1st',
@@ -45,38 +50,31 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
 
     const realm = useRealm();
     const theme = useAppTheme();
+    const currentSessionId: string | undefined = useAppSelector(
+        selectCurrentSessionId
+    );
 
-    // TODO : duplicate code (store session id in store ?)
-    const session: Session | undefined = useQuery(Session, (collection) =>
-        collection
-            .sorted('date')
-            .filtered('state == $0', ESessionState.InProgress)
-    ).at(0);
+    const session: Session | null = useObject(
+        Session,
+        new BSON.ObjectId(currentSessionId)
+    );
     const rep: SessionRepModel | null = useObject(SessionRepModel, repId);
     const sessionSet: SessionSet | null = useObject(SessionSet, sessionSetId);
     const preferences: Preferences | undefined = useQuery(
         Preferences,
         (collection) => collection
     ).at(0);
-    const lastSession: Session | undefined = useQuery(Session, (collection) =>
-        collection
-            .sorted('date', true)
-            .filtered('state != $0', ESessionState.InProgress)
-            .filtered('programId == $0', session?.programId)
+    const lastSession: Session | undefined = useQuery(
+        Session,
+        getLastSession(session?.programId!)
     ).at(0);
     const allSessions: Realm.Results<Session> = useQuery(Session);
 
     useEffect(() => {
-        const maxRep: SessionRepModel | undefined = realm
-            .objects(SessionRepModel)
-            .filtered(
-                'exerciseId == $0 && _id != $1 && order == $2',
-                rep?.exerciseId,
-                repId,
-                rep?.order
-            )
-            .sorted('weight', true)
-            .at(0);
+        const maxRep: SessionRepModel | undefined = getMaxSessionRep(
+            realm,
+            rep
+        );
         if (maxRep) {
             setMaxRepWeight(maxRep.weight);
             setMaxRepNumber(maxRep.number);

@@ -5,6 +5,7 @@ export interface CurrentSessionState {
     countdown: number;
     countdownIntervalId?: NodeJS.Timeout;
     activeSet?: string;
+    id?: string;
 }
 
 const initialState: CurrentSessionState = {
@@ -31,6 +32,9 @@ export const currentSessionSlice = createSlice({
         clearCoutdown: (state) => {
             state.countdown = 0;
         },
+        setCurrentSessionId: (state, action: PayloadAction<string | undefined>) => {
+            state.id = action.payload;
+        },
     },
 });
 
@@ -39,6 +43,7 @@ export const {
     setCountdown,
     setCountdownIntervalId,
     clearCoutdown,
+    setCurrentSessionId,
 } = currentSessionSlice.actions;
 
 export const selectActiveSet = (state: RootState) =>
@@ -49,6 +54,9 @@ export const selectCountdown = (state: RootState) =>
 
 export const selectCountdownIntervalId = (state: RootState) =>
     state.currentSession.countdownIntervalId;
+
+export const selectCurrentSessionId = (state: RootState) =>
+    state.currentSession.id;
 
 export default currentSessionSlice.reducer;
 
