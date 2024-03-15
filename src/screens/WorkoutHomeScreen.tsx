@@ -5,10 +5,9 @@ import { useAppTheme } from '../app/theme';
 import ProgramSelector from '../components/workout/ProgramSelector';
 import { useState } from 'react';
 import { useQuery, useRealm } from '@realm/react';
-import { BSON } from 'realm';
-import { Program, Set } from '../models/Program';
+import { Program } from '../models/Program';
 import InfoBox from '../components/shared/InfoBox';
-import { ESessionSetState, ESessionState, Session, SessionRep, SessionSet } from '../models/Session';
+import { initSession } from '../services/SessionService';
 
 export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     const [programSelectorVisible, setProgramSelectorVisible] =
@@ -19,46 +18,7 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     const realm = useRealm();
 
     const onProgramSelected = (program: Program) => {
-        realm.write(() => {
-            const defaultSessionSets: SessionSet[] = [];
-
-            // TODO: make a Session Service with a InitSession method
-            // First, we create all the reps for each set
-            program.sets.forEach((set: Set) => {
-                const defaultSessionReps: SessionRep[] = [];
-                for (let i = 0; i < set.repsNumber; i++) {
-                    set.exerciceIds.forEach((exerciceId: string) => {
-                        const rep: SessionRep = realm.create(SessionRep, {
-                            exerciseId: new BSON.ObjectId(exerciceId),
-                            order: i,
-                            note: '',
-                            weight: 0,
-                            number: 0
-                        });
-                        defaultSessionReps.push(rep);
-                    });
-                }
-                // Then we create all program sets with their reps
-                const sessionSet: SessionSet = realm.create(SessionSet, {
-                    setId: set._id,
-                    order: set.order,
-                    exerciceIds: set.exerciceIds.map(e => new BSON.ObjectId(e)),
-                    state: ESessionSetState.NotStarted,
-                    recupDuration: set.recupDuration,
-                    note: '', // TODO,
-                    reps: defaultSessionReps,
-                });
-                defaultSessionSets.push(sessionSet);
-            });
-            // Finally, we can create the session
-            realm.create(Session, {
-                programId: program._id,
-                date: new Date(),
-                state: ESessionState.InProgress,
-                sets: defaultSessionSets,
-            });
-        });
-
+        initSession(realm, program);
         navigation.navigate(EScreens.WorkoutSession);
         setProgramSelectorVisible(false);
     };

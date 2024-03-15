@@ -1,5 +1,12 @@
-import { ESessionState, Session, SessionRep } from '../models/Session';
-import { BSON } from 'realm';
+import { Program, Set } from '../models/Program';
+import {
+    ESessionSetState,
+    ESessionState,
+    Session,
+    SessionRep,
+    SessionSet,
+} from '../models/Session';
+import { BSON, List } from 'realm';
 
 /**
  * Retrieves the in-progress session from the given collection.
@@ -49,4 +56,50 @@ export function getMaxSessionRep(
         )
         .sorted('weight', true)
         .at(0);
+}
+
+/**
+ * Initializes a new session in the specified realm with the given program.
+ * @param realm - The realm instance to create the session in.
+ * @param program - The program to create the session for.
+ */
+export function initSession(realm: Realm, program: Program) {
+    realm.write(() => {
+        const defaultSessionSets: SessionSet[] = [];
+
+        // First, we create all the reps for each set
+        program.sets.forEach((set: Set) => {
+            const defaultSessionReps: SessionRep[] = [];
+            for (let i = 0; i < set.repsNumber; i++) {
+                set.exerciceIds.forEach((exerciceId: string) => {
+                    const rep: SessionRep = realm.create(SessionRep, {
+                        exerciseId: new BSON.ObjectId(exerciceId),
+                        order: i,
+                        note: '',
+                        weight: 0,
+                        number: 0,
+                    });
+                    defaultSessionReps.push(rep);
+                });
+            }
+            // Then we create all program sets with their reps
+            const sessionSet: SessionSet = realm.create(SessionSet, {
+                setId: set._id,
+                order: set.order,
+                exerciceIds: set.exerciceIds.map((e) => new BSON.ObjectId(e)),
+                state: ESessionSetState.NotStarted,
+                recupDuration: set.recupDuration,
+                note: '', // TODO,
+                reps: defaultSessionReps,
+            });
+            defaultSessionSets.push(sessionSet);
+        });
+        // Finally, we can create the session
+        realm.create(Session, {
+            programId: program._id,
+            date: new Date(),
+            state: ESessionState.InProgress,
+            sets: defaultSessionSets,
+        });
+    });
 }

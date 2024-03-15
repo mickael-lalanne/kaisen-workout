@@ -29,8 +29,10 @@ export default function WorkoutScreen({ navigation }: RouterProps) {
             session &&
             getFocusedRouteNameFromRoute(route) !== EScreens.WorkoutSession
         ) {
-            dispatch(setCurrentSessionId(session._id.toString()));
             navigation.navigate(EScreens.WorkoutSession);
+        }
+        if (session) {
+            dispatch(setCurrentSessionId(session._id.toString()));
         }
     }, [session]);
 
