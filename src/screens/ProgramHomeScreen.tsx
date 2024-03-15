@@ -54,29 +54,16 @@ export default function ProgramHome({ navigation }: RouterProps) {
 
             <View style={{ flexGrow: 1 }}></View>
 
-            <View
-                style={{
-                    ...styles.exercisesTooltip,
-                    backgroundColor: theme.colors.surfaceVariant,
-                }}
-            >
-                <Text style={{ opacity: 0.7 }}>Exercises</Text>
-                <View style={styles.exercisesIconContainer}>
-                    <Icon
-                        source="triangle"
-                        size={20}
-                        color={theme.colors.surfaceVariant}
-                    ></Icon>
-                </View>
+            <View style={{ alignSelf: 'flex-end', alignItems: 'center' }}>
+                <IconButton
+                    icon="weight"
+                    mode="outlined"
+                    size={25}
+                    style={styles.exercisesBtn}
+                    onPress={() => navigation.navigate(EScreens.Exercises)}
+                />
+                <Text style={styles.exercisesText}>Exercises</Text>
             </View>
-
-            <IconButton
-                icon="weight"
-                mode="outlined"
-                size={25}
-                style={styles.exercisesBtn}
-                onPress={() => navigation.navigate(EScreens.Exercises)}
-            />
 
             <ConfirmDialog
                 visible={!!programToDelete}
@@ -119,24 +106,14 @@ const styles = StyleSheet.create({
         width: 150,
         height: 250,
     },
-    exercisesTooltip: {
-        alignSelf: 'flex-end',
-        padding: 5,
-        paddingHorizontal: 10,
-        borderRadius: 8,
-        marginRight: 22,
-        marginBottom: 10,
-    },
-    exercisesIconContainer: {
-        position: 'absolute',
-        right: 10,
-        bottom: -10,
-        transform: [{ scaleY: -1 }],
-    },
     exercisesBtn: {
         height: EXERCICES_BTN_SIZE,
         width: EXERCICES_BTN_SIZE,
         borderRadius: EXERCICES_BTN_SIZE / 2,
-        alignSelf: 'flex-end',
+    },
+    exercisesText: {
+        opacity: 0.7,
+        fontStyle: 'italic',
+        fontSize: 14,
     },
 });
