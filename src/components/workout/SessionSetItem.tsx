@@ -1,42 +1,29 @@
 import { View, StyleSheet } from 'react-native';
 import { List } from 'react-native-paper';
-import { useQuery } from '@realm/react';
-import { Set } from '../../models/Program';
+import { useQuery, useRealm } from '@realm/react';
 import { useAppTheme } from '../../app/theme';
 import { Exercise } from '../../models/Exercise';
 import { BSON } from 'realm';
 import ExerciseImage from '../shared/ExerciseImage';
-import { useAppSelector } from '../../app/hooks';
-import { selectActiveSet } from '../../features/currentSession';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectActiveSet, setActiveSet } from '../../features/currentSession';
 import SessionRep from './SessionRep';
-import { ESessionSetState, ESessionState, Session, SessionSet } from '../../models/Session';
+import { ESessionSetState, SessionSet } from '../../models/Session';
 import { useEffect, useState } from 'react';
+import ConfirmDialog from '../shared/ConfirmDialog';
 
-type SessionSetItemProps = {
-    set: Set;
-    pressHandler: (set: Set) => void;
-    longPressHandler: (set: Set) => void;
-};
+type SessionSetItemProps = { sessionSet: SessionSet };
 
-export default function SessionSetItem({
-    set,
-    pressHandler,
-    longPressHandler,
-}: SessionSetItemProps) {
-    const [state, setState] = useState<ESessionSetState>(ESessionSetState.NotStarted);
+export default function SessionSetItem({ sessionSet }: SessionSetItemProps) {
+    const [state, setState] = useState<ESessionSetState>(
+        ESessionSetState.NotStarted
+    );
+    const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
 
     const theme = useAppTheme();
     const activeSet: string | undefined = useAppSelector(selectActiveSet);
-
-    // TODO : duplicate code
-    const sessionSet: SessionSet | undefined = useQuery(Session, (collection) =>
-        collection
-            .sorted('date')
-            .filtered('state == $0', ESessionState.InProgress)
-    )
-        .at(0)
-        ?.sets.filtered('setId == $0', set._id)
-        .at(0);
+    const realm = useRealm();
+    const dispatch = useAppDispatch();
 
     /**
      * Updates the state based on the session set's reps.
@@ -51,13 +38,20 @@ export default function SessionSetItem({
         }
     }, [sessionSet]);
 
-    const exerciceIds: BSON.ObjectId[] = set.exerciceIds.map(
+    const exerciceIds: BSON.ObjectId[] = sessionSet.exerciceIds.map(
         (e) => new BSON.ObjectId(e)
     );
     const setExercices: Realm.Results<Exercise> = useQuery(
         Exercise,
         (collection) => collection.filtered('_id IN $0', exerciceIds)
     );
+
+    const deleteSet = () => {
+        realm.write(() => {
+            realm.delete(sessionSet);
+        });
+        setConfirmDelete(false);
+    };
 
     const _getExerciceName = (): string => {
         const exercisesNames: string[] = setExercices.map((ex) => ex.name);
@@ -96,7 +90,12 @@ export default function SessionSetItem({
             title={_getExerciceName()}
             left={(props) => (
                 <View>
-                    <View style={{...styles.stateIndicator, backgroundColor: _getStateColor()}}></View>
+                    <View
+                        style={{
+                            ...styles.stateIndicator,
+                            backgroundColor: _getStateColor(),
+                        }}
+                    ></View>
                     <ExerciseImage
                         exercises={setExercices}
                         size={30}
@@ -111,11 +110,21 @@ export default function SessionSetItem({
                 borderTopColor: theme.colors.elevation.level2,
                 borderTopWidth: 1,
             }}
-            expanded={activeSet === set._id.toString()}
-            onPress={() => pressHandler(set)}
-            onLongPress={() => longPressHandler(set)}
+            expanded={activeSet === sessionSet._id.toString()}
+            onPress={() => dispatch(setActiveSet(sessionSet._id.toString()))}
+            onLongPress={() => setConfirmDelete(true)}
         >
             <View style={styles.setContainer}>{SetReps()}</View>
+
+            <ConfirmDialog
+                visible={confirmDelete}
+                title="It stays between us 🙈"
+                content={
+                    'Do you want to skip the ' + _getExerciceName() + ' set for today ?'
+                }
+                confirmHandler={deleteSet}
+                cancelHandler={() => setConfirmDelete(false)}
+            />
         </List.Accordion>
     );
 }
@@ -138,5 +147,5 @@ const styles = StyleSheet.create({
         left: -10,
         width: 5,
         height: 200,
-    }
+    },
 });
