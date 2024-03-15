@@ -3,9 +3,14 @@ import {
     NavigationContainer,
     DefaultTheme,
     DarkTheme as DefaultDarkTheme,
+    EventArg,
 } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Icon, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
+import {
+    IconButton,
+    PaperProvider,
+    adaptNavigationTheme,
+} from 'react-native-paper';
 import ProgressionScreen from './screens/ProgressionScreen';
 import WorkoutScreen from './screens/WorkoutScreen';
 import ProgramScreen from './screens/ProgramScreen';
@@ -14,6 +19,9 @@ import { EScreens } from './app/router';
 import { useQuery, useRealm } from '@realm/react';
 import { EWeightUnit, Preferences } from './models/Preferences';
 import HeaderBar from './components/HeaderBar';
+import { StyleSheet } from 'react-native';
+import { useAppSelector } from './app/hooks';
+import { selectCurrentSessionId } from './features/currentSession';
 
 const Tab = createBottomTabNavigator();
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
@@ -42,6 +50,15 @@ export default function AppChild() {
 
     const darkMode: boolean =
         !preferences || preferences.darkMode ? true : false;
+    const currentSessionId: string | undefined = useAppSelector(
+        selectCurrentSessionId
+    );
+
+    const onTabPress = (e: EventArg<'tabPress', true, undefined>) => {
+        if (currentSessionId) {
+            e.preventDefault();
+        }
+    };
 
     return (
         <PaperProvider theme={darkMode ? DARK_THEME : LIGHT_THEME}>
@@ -53,14 +70,9 @@ export default function AppChild() {
                         tabBarIconStyle: {
                             maxHeight: 30,
                         },
-                        tabBarItemStyle: {
-                            justifyContent: 'center',
-                        },
+                        tabBarItemStyle: {},
                         tabBarStyle: {
-                            height: 70,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            alignContent: 'center',
+                            ...styles.tabBarItem,
                             backgroundColor: darkMode
                                 ? DARK_THEME.colors.surface
                                 : LIGHT_THEME.colors.surface,
@@ -75,11 +87,16 @@ export default function AppChild() {
                     <Tab.Screen
                         name={EScreens.Program}
                         component={ProgramScreen}
+                        listeners={{ tabPress: onTabPress }}
                         options={{
+                            tabBarItemStyle: {
+                                opacity: currentSessionId ? 0.2 : 1,
+                                justifyContent: 'center',
+                            },
                             tabBarIcon: ({ color }) => (
-                                <Icon
-                                    source="file-document-edit-outline"
-                                    color={color}
+                                <IconButton
+                                    icon="file-document-edit-outline"
+                                    iconColor={color}
                                     size={26}
                                 />
                             ),
@@ -89,10 +106,13 @@ export default function AppChild() {
                         name={EScreens.Workout}
                         component={WorkoutScreen}
                         options={{
+                            tabBarItemStyle: {
+                                justifyContent: 'center',
+                            },
                             tabBarIcon: ({ color }) => (
-                                <Icon
-                                    source="weight-lifter"
-                                    color={color}
+                                <IconButton
+                                    icon="weight-lifter"
+                                    iconColor={color}
                                     size={26}
                                 />
                             ),
@@ -101,11 +121,16 @@ export default function AppChild() {
                     <Tab.Screen
                         name={EScreens.Progression}
                         component={ProgressionScreen}
+                        listeners={{ tabPress: onTabPress }}
                         options={{
+                            tabBarItemStyle: {
+                                opacity: currentSessionId ? 0.2 : 1,
+                                justifyContent: 'center',
+                            },
                             tabBarIcon: ({ color }) => (
-                                <Icon
-                                    source="chart-bell-curve-cumulative"
-                                    color={color}
+                                <IconButton
+                                    icon="chart-bell-curve-cumulative"
+                                    iconColor={color}
                                     size={26}
                                 />
                             ),
@@ -116,3 +141,12 @@ export default function AppChild() {
         </PaperProvider>
     );
 }
+
+const styles = StyleSheet.create({
+    tabBarItem: {
+        height: 70,
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignContent: 'center',
+    },
+});
