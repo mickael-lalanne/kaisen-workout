@@ -44,6 +44,7 @@ export class SessionRep extends Realm.Object {
     exerciseId!: BSON.ObjectId;
     order!: number;
     weight!: number;
+    number!: number;
 
     static primaryKey = '_id';
 }

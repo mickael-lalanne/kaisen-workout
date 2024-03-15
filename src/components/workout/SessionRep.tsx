@@ -12,7 +12,11 @@ import { useEffect, useState } from 'react';
 import { useAppTheme } from '../../app/theme';
 import { Text } from 'react-native-paper';
 import { EWeightUnit, Preferences } from '../../models/Preferences';
-import { convertKgToLb, convertLbToKg, roundTwoDecimals } from '../../app/utils';
+import {
+    convertKgToLb,
+    convertLbToKg,
+    roundTwoDecimals,
+} from '../../app/utils';
 
 const ORDINAL_NUMBER: string[] = [
     '1st',
@@ -34,8 +38,10 @@ type SessionRepProps = {
 
 export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
     const [localWeight, setLocalWeight] = useState<number>(0);
+    const [localNumber, setLocalNumber] = useState<number>(0);
     const [unitToDisplay, setUnitToDisplay] = useState<string>('kg');
     const [maxRepWeight, setMaxRepWeight] = useState<number>();
+    const [maxRepNumber, setMaxRepNumber] = useState<number>();
 
     const realm = useRealm();
     const theme = useAppTheme();
@@ -61,11 +67,20 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
     const allSessions: Realm.Results<Session> = useQuery(Session);
 
     useEffect(() => {
-        const maxRep: number | undefined = realm.objects(SessionRepModel)
-            .filtered('exerciseId == $0', rep?.exerciseId)
-            .filtered('order == $0', rep?.order)
-            .max('weight') as number | undefined;
-        setMaxRepWeight(maxRep);
+        const maxRep: SessionRepModel | undefined = realm
+            .objects(SessionRepModel)
+            .filtered(
+                'exerciseId == $0 && _id != $1 && order == $2',
+                rep?.exerciseId,
+                repId,
+                rep?.order
+            )
+            .sorted('weight', true)
+            .at(0);
+        if (maxRep) {
+            setMaxRepWeight(maxRep.weight);
+            setMaxRepNumber(maxRep.number);
+        }
     }, [allSessions]);
 
     useEffect(() => {
@@ -74,6 +89,7 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
                 ? convertKgToLb(rep?.weight || 0)
                 : rep?.weight || 0;
         setLocalWeight(roundTwoDecimals(weightToDisplay));
+        setLocalNumber(rep?.number || 0);
     }, [repId]);
 
     useEffect(() => {
@@ -83,6 +99,20 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
                 : 'kg'
         );
     }, [preferences]);
+
+    const onNumberInputChange = (textNumber: string) => {
+        if (!sessionSet) {
+            return;
+        }
+        let numberValue: number = Number(textNumber);
+
+        if (rep && rep.number !== numberValue) {
+            realm.write(() => {
+                rep.number = numberValue;
+            });
+        }
+        setLocalNumber(numberValue);
+    };
 
     const onWeightInputChange = (textWeight: string) => {
         if (!sessionSet) {
@@ -123,7 +153,8 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
                 lastSessionRepWeight = roundTwoDecimals(lastSessionRepWeight);
                 return (
                     <Text style={styles.repInfo}>
-                        Last : {lastSessionRepWeight} {unitToDisplay}
+                        Last : {lastSessionRep.number} x {lastSessionRepWeight}{' '}
+                        {unitToDisplay}
                     </Text>
                 );
             }
@@ -139,7 +170,8 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
             maxRepWeightToDisplay = roundTwoDecimals(maxRepWeightToDisplay);
             return (
                 <Text style={styles.repInfo}>
-                    Max : {maxRepWeightToDisplay} {unitToDisplay}
+                    Max : {maxRepNumber} x {maxRepWeightToDisplay}{' '}
+                    {unitToDisplay}
                 </Text>
             );
         }
@@ -147,22 +179,59 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
 
     return (
         <View>
-            <NumberInput
-                value={localWeight === 0 ? '' : localWeight?.toString() || ''}
-                style={styles.repNumber}
-                contentStyle={{ paddingLeft: 10 }}
-                inputStyle={{
+            <Text style={styles.repTitle}>
+                {ORDINAL_NUMBER[rep?.order!] + ' rep'}
+            </Text>
+            <View
+                style={{
+                    ...styles.repsContainer,
                     backgroundColor:
                         localWeight > 0
                             ? theme.colors.success
                             : theme.colors.elevation.level2,
-                    paddingLeft: 0,
-                    marginLeft: 0,
                 }}
-                label={ORDINAL_NUMBER[rep?.order!] + ' rep'}
-                changeHandler={(textWeight) => onWeightInputChange(textWeight)}
-                noError
-            />
+            >
+                <NumberInput
+                    value={
+                        localNumber === 0 ? '' : localNumber.toString() || ''
+                    }
+                    style={styles.repNumberInput}
+                    contentStyle={{ paddingLeft: 5 }}
+                    inputStyle={{
+                        backgroundColor:
+                            localWeight > 0
+                                ? theme.colors.success
+                                : theme.colors.elevation.level2,
+                        ...styles.commonInputStyle,
+                    }}
+                    dense
+                    changeHandler={(textWeight) =>
+                        onNumberInputChange(textWeight)
+                    }
+                    noError
+                />
+                <Text>x</Text>
+                <NumberInput
+                    value={
+                        localWeight === 0 ? '' : localWeight?.toString() || ''
+                    }
+                    style={styles.repWeightInput}
+                    contentStyle={{ paddingLeft: 10 }}
+                    inputStyle={{
+                        backgroundColor:
+                            localWeight > 0
+                                ? theme.colors.success
+                                : theme.colors.elevation.level2,
+                        ...styles.commonInputStyle,
+                    }}
+                    dense
+                    changeHandler={(textWeight) =>
+                        onWeightInputChange(textWeight)
+                    }
+                    noError
+                />
+                <Text>{unitToDisplay}</Text>
+            </View>
             {LastRepInfo()}
             {MaxRepInfo()}
         </View>
@@ -170,15 +239,38 @@ export default function SessionRep({ sessionSetId, repId }: SessionRepProps) {
 }
 
 const styles = StyleSheet.create({
-    repsContainer: {},
-    repNumber: {
-        width: 86,
-        marginBottom: 5,
+    repsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        borderRadius: 15,
+        paddingTop: 5,
+    },
+    repTitle: {
+        position: 'absolute',
+        zIndex: 1,
+        fontSize: 10,
+        top: 3,
+        left: 10,
+        fontStyle: 'italic',
+        opacity: 0.5,
+    },
+    repNumberInput: {
+        width: 45,
+        marginVertical: 5,
+    },
+    repWeightInput: {
+        width: 65,
+        marginVertical: 5,
+    },
+    commonInputStyle: {
+        paddingLeft: 0,
+        marginLeft: 0,
     },
     repInfo: {
         fontSize: 7,
         fontStyle: 'italic',
         opacity: 0.5,
-        paddingLeft: 5,
+        paddingLeft: 10,
     },
 });

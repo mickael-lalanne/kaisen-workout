@@ -32,7 +32,8 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
                             exerciseId: new BSON.ObjectId(exerciceId),
                             order: i,
                             note: '',
-                            weight: 0
+                            weight: 0,
+                            number: 0
                         });
                         defaultSessionReps.push(rep);
                     });

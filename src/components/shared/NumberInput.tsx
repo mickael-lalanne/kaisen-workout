@@ -6,7 +6,8 @@ import { useAppTheme } from '../../app/theme';
 type NumberInputProps = {
     value: string;
     changeHandler: (text: string) => void;
-    label: string;
+    label?: string;
+    placeholder?: string;
     style?: object;
     inputStyle?: object;
     contentStyle?: object;
@@ -19,6 +20,7 @@ export default function NumberInput({
     value,
     changeHandler,
     label,
+    placeholder,
     style,
     inputStyle,
     contentStyle,
@@ -85,6 +87,7 @@ export default function NumberInput({
             <TextInput
                 label={label}
                 value={localValue}
+                placeholder={placeholder}
                 onChangeText={onChange}
                 style={inputStyle}
                 contentStyle={contentStyle}
