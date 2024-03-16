@@ -44,7 +44,7 @@ export default function RestTimer({}: RestTimerProps) {
     }, [activeSet]);
 
     const onLocalCountdownChange = (value: string) => {
-        dispatch(clearCoutdown(Number(value) || 0))
+        dispatch(clearCoutdown(Number(value) || 0));
         setLocalCountdown(Number(value) || 0);
     };
 

@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from '../app/store';
+import { Vibration } from 'react-native';
+import {
+    VIBRATION_HEAVY_PATTERN,
+    VIBRATION_LIGHT_PATTERN,
+} from '../app/vibration';
 
 export interface CurrentSessionState {
     countdown: number;
@@ -33,7 +38,10 @@ export const currentSessionSlice = createSlice({
             state.countdown = action.payload || 0;
             state.countdownIntervalId = undefined;
         },
-        setCurrentSessionId: (state, action: PayloadAction<string | undefined>) => {
+        setCurrentSessionId: (
+            state,
+            action: PayloadAction<string | undefined>
+        ) => {
             state.id = action.payload;
         },
     },
@@ -74,9 +82,16 @@ export const startCountdown =
         }
 
         const intervalId = setInterval(() => {
-            const { countdown, countdownIntervalId } = getState().currentSession;
+            const { countdown, countdownIntervalId } =
+                getState().currentSession;
             if (countdown > 0 && countdownIntervalId) {
                 dispatch(setCountdown(countdown - 1));
+                // Vibrate when the countdown reaches some specific timings
+                if (countdown === 11 || countdown === 6) {
+                    Vibration.vibrate(VIBRATION_LIGHT_PATTERN);
+                } else if (countdown === 1) {
+                    Vibration.vibrate(VIBRATION_HEAVY_PATTERN);
+                }
             } else {
                 clearInterval(intervalId);
                 dispatch(setCountdownIntervalId(undefined));

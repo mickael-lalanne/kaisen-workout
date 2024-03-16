@@ -56,10 +56,11 @@ export default function AppChild() {
     );
 
     const onTabPress = (e: EventArg<'tabPress', true, undefined>) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         if (currentSessionId) {
             e.preventDefault();
+            return;
         }
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     };
 
     return (
