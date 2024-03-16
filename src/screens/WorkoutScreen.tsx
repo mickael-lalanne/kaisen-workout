@@ -11,7 +11,7 @@ import {
     useRoute,
 } from '@react-navigation/native';
 import { useAppDispatch } from '../app/hooks';
-import { setCurrentSessionId } from '../features/currentSession';
+import { setActiveSet, setCurrentSessionId } from '../features/currentSession';
 import { getInProgressSession } from '../services/SessionService';
 
 export default function WorkoutScreen({ navigation }: RouterProps) {
@@ -30,6 +30,7 @@ export default function WorkoutScreen({ navigation }: RouterProps) {
             getFocusedRouteNameFromRoute(route) !== EScreens.WorkoutSession
         ) {
             navigation.navigate(EScreens.WorkoutSession);
+            dispatch(setActiveSet(session.sets[0]._id.toString()));
         }
         if (session) {
             dispatch(setCurrentSessionId(session._id.toString()));

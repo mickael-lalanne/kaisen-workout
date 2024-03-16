@@ -63,7 +63,8 @@ export function getMaxSessionRep(
  * @param realm - The realm instance to create the session in.
  * @param program - The program to create the session for.
  */
-export function initSession(realm: Realm, program: Program) {
+export function initSession(realm: Realm, program: Program): Session {
+    let createdSession: Session | undefined = undefined;
     realm.write(() => {
         program.lastUsageDate = new Date();
 
@@ -97,11 +98,13 @@ export function initSession(realm: Realm, program: Program) {
             defaultSessionSets.push(sessionSet);
         });
         // Finally, we can create the session
-        realm.create(Session, {
+        createdSession = realm.create(Session, {
             programId: program._id,
             date: new Date(),
             state: ESessionState.InProgress,
             sets: defaultSessionSets,
         });
     });
+
+    return createdSession!;
 }

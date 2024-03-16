@@ -9,6 +9,9 @@ import { Program } from '../models/Program';
 import InfoBox from '../components/shared/InfoBox';
 import { initSession } from '../services/SessionService';
 import * as Haptics from 'expo-haptics';
+import { useAppDispatch } from '../app/hooks';
+import { setActiveSet } from '../features/currentSession';
+import { Session } from '../models/Session';
 
 export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     const [programSelectorVisible, setProgramSelectorVisible] =
@@ -17,11 +20,13 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     const theme = useAppTheme();
     const programs = useQuery(Program);
     const realm = useRealm();
+    const dispatch = useAppDispatch();
 
     const onProgramSelected = (program: Program) => {
-        initSession(realm, program);
+        const newSession: Session = initSession(realm, program);
         navigation.navigate(EScreens.WorkoutSession);
         setProgramSelectorVisible(false);
+        dispatch(setActiveSet(newSession.sets[0]._id.toString()));
     };
 
     const NoProgramMessage = (): React.JSX.Element | undefined => {
