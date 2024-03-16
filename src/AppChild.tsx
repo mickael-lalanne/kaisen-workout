@@ -68,6 +68,7 @@ export default function AppChild() {
             <NavigationContainer theme={darkMode ? DarkTheme : LightTheme}>
                 <StatusBar style={darkMode ? 'light' : 'dark'} />
                 <Tab.Navigator
+                    backBehavior="history"
                     initialRouteName={EScreens.Workout}
                     screenOptions={{
                         tabBarIconStyle: {
