@@ -26,10 +26,11 @@ export default function NumberInput({
     contentStyle,
     alert,
     dense,
-    noError
+    noError,
 }: NumberInputProps) {
     const [localValue, setLocalValue] = useState<string>('');
     const [error, setError] = useState<boolean>(false);
+    const [endingWithDot, setEndingWithDot] = useState<boolean>(false);
 
     const theme = useAppTheme();
 
@@ -38,8 +39,8 @@ export default function NumberInput({
     }, [value]);
 
     const onChange = (text: string) => {
-        // Check if reps number contains only digits
-        let isNum = /^\d+$/.test(text);
+        // Check if reps number contains only digits and at most one dot
+        let isNum = /^[0-9]*\.?[0-9]*$/.test(text);
         if (!isNum) {
             setError(true);
             setTimeout(() => {
@@ -47,7 +48,16 @@ export default function NumberInput({
             }, 2000);
         }
 
-        changeHandler(text.replace(/[^0-9]/g, ''));
+        // cf https://stackoverflow.com/a/55189615/22930358
+        const textToDisplay: string = text
+            // remove all characters other than digits and points
+            .replace(/[^.\d]/g, '')
+            // only allow one dot
+            .replace(/^(\d*\.?)|(\d*)\.?/g, '$1$2');
+
+        setEndingWithDot(textToDisplay.endsWith('.'));
+
+        changeHandler(textToDisplay);
     };
 
     const Error = (): React.JSX.Element | undefined => {
@@ -86,7 +96,7 @@ export default function NumberInput({
         <View style={style}>
             <TextInput
                 label={label}
-                value={localValue}
+                value={localValue + (endingWithDot ? '.' : '')}
                 placeholder={placeholder}
                 onChangeText={onChange}
                 style={inputStyle}
