@@ -22,6 +22,7 @@ import HeaderBar from './components/HeaderBar';
 import { StyleSheet } from 'react-native';
 import { useAppSelector } from './app/hooks';
 import { selectCurrentSessionId } from './features/currentSession';
+import * as Haptics from 'expo-haptics';
 
 const Tab = createBottomTabNavigator();
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
@@ -55,6 +56,7 @@ export default function AppChild() {
     );
 
     const onTabPress = (e: EventArg<'tabPress', true, undefined>) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         if (currentSessionId) {
             e.preventDefault();
         }
@@ -105,6 +107,7 @@ export default function AppChild() {
                     <Tab.Screen
                         name={EScreens.Workout}
                         component={WorkoutScreen}
+                        listeners={{ tabPress: onTabPress }}
                         options={{
                             tabBarItemStyle: {
                                 justifyContent: 'center',

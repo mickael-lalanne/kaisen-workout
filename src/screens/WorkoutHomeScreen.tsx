@@ -8,6 +8,7 @@ import { useQuery, useRealm } from '@realm/react';
 import { Program } from '../models/Program';
 import InfoBox from '../components/shared/InfoBox';
 import { initSession } from '../services/SessionService';
+import * as Haptics from 'expo-haptics';
 
 export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     const [programSelectorVisible, setProgramSelectorVisible] =
@@ -34,6 +35,11 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
         }
     };
 
+    const onStartWorkoutPress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        setProgramSelectorVisible(true);
+    };
+
     return (
         <View
             style={{
@@ -51,7 +57,7 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
                 style={styles.workoutBtn}
                 contentStyle={{ height: 100 }}
                 mode="contained"
-                onPress={() => setProgramSelectorVisible(true)}
+                onPress={onStartWorkoutPress}
                 disabled={programs.length === 0}
             >
                 START WORKOUT
