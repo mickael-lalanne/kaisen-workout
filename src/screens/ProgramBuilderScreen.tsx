@@ -168,7 +168,7 @@ export default function ProgramBuilderScreen({
             <View style={{ flexDirection: 'row' }}>
                 <TextInput
                     label="Description"
-                    style={{ flexGrow: 1, marginRight: 5 }}
+                    style={{ flexGrow: 1, marginRight: 5, flex: 1 }}
                     contentStyle={{ height: 100 }}
                     multiline
                     numberOfLines={4}
