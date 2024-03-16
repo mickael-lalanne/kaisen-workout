@@ -32,6 +32,7 @@ export class SessionSet extends Realm.Object {
     recupDuration!: number;
     order!: number;
     state!: string; // ESessionSetState
+    onTheFly: boolean = false;
 
     reps!: Realm.List<SessionRep>;
 

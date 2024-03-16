@@ -8,6 +8,7 @@ import { useAppSelector } from '../app/hooks';
 import { List } from 'react-native-paper';
 import { BSON } from 'realm';
 import SessionSetItem from '../components/workout/SessionSetItem';
+import AddSessionSetButton from '../components/workout/AddSessionSetButton';
 
 export default function WorkoutSessionScreen() {
     const theme = useAppTheme();
@@ -42,10 +43,12 @@ export default function WorkoutSessionScreen() {
             }}
         >
             <ScrollView>
-                <List.Section style={{ marginTop: 0 }}>
+                <List.Section style={{ marginVertical: 0 }}>
                     {SetsList()}
                 </List.Section>
             </ScrollView>
+
+            <AddSessionSetButton />
 
             <RestTimer />
         </View>
