@@ -21,7 +21,7 @@ import { SessionSet } from '../../models/Session';
 type RestTimerProps = {};
 
 export default function RestTimer({}: RestTimerProps) {
-    const [initialCountdown, setInitialCountdown] = useState<number>(0);
+    const [localCountdown, setLocalCountdown] = useState<number>(0);
 
     const activeSetId: string | undefined = useAppSelector(selectActiveSet);
     const countdown: number = useAppSelector(selectCountdown);
@@ -39,9 +39,14 @@ export default function RestTimer({}: RestTimerProps) {
     useEffect(() => {
         if (activeSet && activeSet.recupDuration) {
             dispatch(setCountdown(activeSet.recupDuration));
-            setInitialCountdown(activeSet.recupDuration);
+            setLocalCountdown(activeSet.recupDuration);
         }
     }, [activeSet]);
+
+    const onLocalCountdownChange = (value: string) => {
+        dispatch(clearCoutdown(Number(value) || 0))
+        setLocalCountdown(Number(value) || 0);
+    };
 
     const PlayPauseIcon = (): React.JSX.Element => {
         if (countdownIntervalId) {
@@ -78,18 +83,16 @@ export default function RestTimer({}: RestTimerProps) {
             <View style={styles.rightContainer}>
                 <NumberInput
                     label="Rest (s)"
-                    value={initialCountdown ? initialCountdown.toString() : ''}
-                    changeHandler={(value) =>
-                        dispatch(setCountdown(Number(value) || 0))
-                    }
-                    alert
+                    value={localCountdown ? localCountdown.toString() : ''}
+                    changeHandler={(value) => onLocalCountdownChange(value)}
+                    noError
                     style={{ width: 81 }}
                     dense
                 />
                 <View style={styles.actionButtonsContainer}>
                     <IconButton
                         icon="stop"
-                        onPress={() => dispatch(clearCoutdown())}
+                        onPress={() => dispatch(clearCoutdown(localCountdown))}
                         mode="contained"
                     />
                     {PlayPauseIcon()}
@@ -102,8 +105,9 @@ export default function RestTimer({}: RestTimerProps) {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        padding: 10,
-        paddingBottom: 0,
+        paddingHorizontal: 10,
+        paddingTop: 15,
+        paddingBottom: 7,
     },
     timerContainer: {
         flexGrow: 1,

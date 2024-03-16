@@ -29,8 +29,9 @@ export const currentSessionSlice = createSlice({
         ) => {
             state.countdownIntervalId = action.payload;
         },
-        clearCoutdown: (state) => {
-            state.countdown = 0;
+        clearCoutdown: (state, action: PayloadAction<number | undefined>) => {
+            state.countdown = action.payload || 0;
+            state.countdownIntervalId = undefined;
         },
         setCurrentSessionId: (state, action: PayloadAction<string | undefined>) => {
             state.id = action.payload;
