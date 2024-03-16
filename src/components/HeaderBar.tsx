@@ -26,6 +26,7 @@ import {
     setCurrentSessionId,
 } from '../features/currentSession';
 import { BSON } from 'realm';
+import * as Haptics from 'expo-haptics';
 
 interface HeaderBarProps {
     navigation: RouterProps['navigation'];
@@ -73,7 +74,12 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
             case EScreens.WorkoutHome:
                 return '⚔️  Perform like Toji';
             case EScreens.WorkoutSession:
-                return 'Session in progress';
+                return (
+                    new Date().toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: '2-digit',
+                    }) + ' session'
+                );
             case EScreens.Progression:
                 return '📈  Analyze like Nanami';
             case EScreens.ProgramBuilder:
@@ -126,7 +132,10 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
 
         const pressHandler =
             routeName === EScreens.WorkoutSession
-                ? () => setCancelSession(true)
+                ? () => {
+                      setCancelSession(true);
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }
                 : () => navigation.goBack();
 
         if (showBackIcon) {
@@ -142,7 +151,10 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
                     mode="contained"
                     size={33}
                     style={{ backgroundColor: BACKGROUND_COLOR }}
-                    onPress={() => setFinishSession(true)}
+                    onPress={() => {
+                        setFinishSession(true);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+                    }}
                 />
             );
         }
