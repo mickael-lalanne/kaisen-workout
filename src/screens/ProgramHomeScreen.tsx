@@ -68,7 +68,7 @@ export default function ProgramHome({ navigation }: RouterProps) {
             <ConfirmDialog
                 visible={!!programToDelete}
                 title={`⚠️ Delete ${programToDelete?.name} program ?`}
-                content="Be carefull. Deleting the program will remove all the sets and the sessions associated with it."
+                content="Be carefull. Deleting the program will remove all the sets associated with it."
                 confirmHandler={deleteProgram}
                 cancelHandler={() => setProgramToDelete(undefined)}
             />
