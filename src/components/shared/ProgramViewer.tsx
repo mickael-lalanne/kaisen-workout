@@ -3,17 +3,20 @@ import { Divider, Text, TouchableRipple } from 'react-native-paper';
 import React, { useState } from 'react';
 import { Program } from '../../models/Program';
 import { useAppTheme } from '../../app/theme';
+import { formatDateToReadable } from '../../app/utils';
 
 export type ProgramViewerProps = {
     programs: Realm.Results<Program>;
     pressHandler: (program: Program) => void;
     longPressHandler?: (program: Program) => void;
+    sortingMode?: 'creationDate' | 'lastUsageDate';
 };
 
 export default function ProgramViewer({
     programs,
     pressHandler,
     longPressHandler,
+    sortingMode = 'creationDate',
 }: ProgramViewerProps) {
     const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
@@ -29,12 +32,51 @@ export default function ProgramViewer({
                 return <Divider style={styles.divider} />;
             }
         };
-        programs.forEach((p: Program, i: number) => {
+
+        const sortedPrograms: Program[] = [...programs].sort((a, b) => {
+            if (sortingMode === 'creationDate') {
+                return a.creationDate > b.creationDate ? -1 : 1;
+            } else if (a.lastUsageDate && b.lastUsageDate) {
+                return a.lastUsageDate > b.lastUsageDate ? -1 : 1;
+            } else if (a.lastUsageDate) {
+                return -1;
+            } else if (b.lastUsageDate) {
+                return 1;
+            } else {
+                return a.creationDate > b.creationDate ? -1 : 1;
+            }
+        });
+
+        const LastUsageInfo = (
+            program: Program
+        ): React.JSX.Element | undefined => {
+            if (sortingMode === 'lastUsageDate') {
+                const lastUsageText = program.lastUsageDate
+                    ? 'Last workout : ' +
+                      formatDateToReadable(program.lastUsageDate)
+                    : 'Not used yet';
+
+                return (
+                    <Text
+                        style={{
+                            ...styles.programLastUse,
+                            borderColor: theme.colors.inverseSurface,
+                        }}
+                    >
+                        {lastUsageText}
+                    </Text>
+                );
+            }
+        };
+
+        sortedPrograms.forEach((p: Program, i: number) => {
             programElements.push(
                 <View style={{ flexDirection: 'row' }} key={p._id.toString()}>
                     <TouchableRipple
                         onPress={() => pressHandler(p)}
-                        onLongPress={() => longPressHandler && longPressHandler(p)}
+                        onLongPress={() =>
+                            longPressHandler && longPressHandler(p)
+                        }
                         background={
                             isScrolling ? 'rgba(0, 0, 0, 0)' : undefined
                         }
@@ -58,6 +100,7 @@ export default function ProgramViewer({
                                 >
                                     {p.description}
                                 </Text>
+                                {LastUsageInfo(p)}
                             </View>
                         </View>
                     </TouchableRipple>
@@ -83,7 +126,6 @@ export default function ProgramViewer({
             >
                 {ProgramList()}
             </ScrollView>
-
         </View>
     );
 }
@@ -114,7 +156,17 @@ const styles = StyleSheet.create({
     programDescription: {
         textAlign: 'center',
         fontSize: 8,
-        color: 'grey',
+        opacity: 0.5,
+        minHeight: 30,
+    },
+    programLastUse: {
+        textAlign: 'center',
+        fontSize: 8,
+        opacity: 0.5,
+        borderTopWidth: 0.5,
+        fontStyle: 'italic',
+        paddingTop: 2,
+        marginTop: 5,
     },
     divider: {
         width: 1,

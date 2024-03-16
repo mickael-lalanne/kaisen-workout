@@ -28,6 +28,7 @@ export default function ProgramSelector({
                     <ProgramViewer
                         programs={programs}
                         pressHandler={selectHandler}
+                        sortingMode='lastUsageDate'
                     />
                 </Dialog.Content>
             </Dialog>

@@ -1,4 +1,3 @@
-
 /**
  * Formats the duration in seconds into a string representation of hours, minutes, and seconds.
  * @param durationInSeconds - The duration in seconds.
@@ -40,8 +39,8 @@ export const formatDuration = (durationInSeconds: number) => {
  * @returns The weight in kilograms.
  */
 export const convertLbToKg = (lb: number): number => {
-    return lb *0.4535923;
-}
+    return lb * 0.4535923;
+};
 
 /**
  * Converts a weight from kilograms to pounds.
@@ -49,8 +48,8 @@ export const convertLbToKg = (lb: number): number => {
  * @returns The weight in pounds.
  */
 export const convertKgToLb = (kg: number): number => {
-    return kg *2.2046226218;
-}
+    return kg * 2.2046226218;
+};
 
 /**
  * Rounds a number to two decimal places.
@@ -62,4 +61,17 @@ export const roundTwoDecimals = (value: number): number => {
     const inv = 1.0 / 0.25;
 
     return Math.round(value * inv) / inv;
+};
+
+/**
+ * Formats a date to a readable string representation.
+ * @param date - The date to format.
+ * @returns The formatted date string.
+ */
+export const formatDateToReadable = (date: Date): string => {
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
 };

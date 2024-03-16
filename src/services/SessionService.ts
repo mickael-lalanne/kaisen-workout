@@ -65,6 +65,8 @@ export function getMaxSessionRep(
  */
 export function initSession(realm: Realm, program: Program) {
     realm.write(() => {
+        program.lastUsageDate = new Date();
+
         const defaultSessionSets: SessionSet[] = [];
 
         // First, we create all the reps for each set
