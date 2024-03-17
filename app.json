@@ -4,6 +4,7 @@
         "slug": "kaisen-workout",
         "version": "1.0.0",
         "orientation": "portrait",
+        "owner": "mickaellalanne",
         "icon": "./assets/icon.png",
         "userInterfaceStyle": "light",
         "splash": {
