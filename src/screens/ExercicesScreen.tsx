@@ -50,15 +50,28 @@ export default function ExerciseScreen() {
         setExerciseToEdit(undefined);
     };
 
+    const Subtitle = (): React.JSX.Element => {
+        if (exercises.length === 0) {
+            return (
+                <Text style={styles.noExerciseText}>
+                    Well...{'\n'}
+                    It's a little bit embarassing...{'\n'}
+                    It seems you don't have any exercise yet...
+                </Text>
+            );
+        } else {
+            return (
+                <Text style={styles.subtitle}>
+                    Press an exercise to edit it, long press to delete it !
+                </Text>
+            );
+        }
+    };
+
     const NoExerciseMessage = (): React.JSX.Element | undefined => {
         if (exercises.length === 0) {
             return (
                 <View style={{ alignItems: 'center' }}>
-                    <Text style={styles.noExerciseText}>
-                        Well...{'\n'}
-                        It's a little bit embarassing...{'\n'}
-                        It seems you don't have any exercise yet...
-                    </Text>
                     <Image
                         source={require('../assets/well.jpg')}
                         resizeMode="contain"
@@ -70,15 +83,18 @@ export default function ExerciseScreen() {
     };
 
     return (
-        <View style={styles.viewContainer}>
-            <Text style={styles.subtitle}>
-                Press an exercise to edit it, long press to delete it !
-            </Text>
+        <View
+            style={{
+                ...styles.viewContainer,
+                backgroundColor: theme.colors.surface,
+            }}
+        >
+            {Subtitle()}
 
             <View
                 style={{
                     ...styles.viewerContainer,
-                    backgroundColor: theme.colors.elevation.level2,
+                    backgroundColor: theme.colors.elevation.level5,
                 }}
             >
                 {NoExerciseMessage()}
@@ -138,7 +154,6 @@ const styles = StyleSheet.create({
         marginVertical: 20,
     },
     noExerciseText: {
-        textAlign: 'center',
         marginBottom: 10,
         fontStyle: 'italic',
         fontSize: 10,

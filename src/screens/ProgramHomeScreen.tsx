@@ -6,12 +6,14 @@ import { useQuery, useRealm } from '@realm/react';
 import { Program } from '../models/Program';
 import ProgramViewer from '../components/shared/ProgramViewer';
 import ConfirmDialog from '../components/shared/ConfirmDialog';
+import { useAppTheme } from '../app/theme';
 
 export default function ProgramHome({ navigation }: RouterProps) {
     const [programToDelete, setProgramToDelete] = useState<Program>();
 
     const programs = useQuery(Program);
     const realm = useRealm();
+    const theme = useAppTheme();
 
     const deleteProgram = (): void => {
         if (programToDelete) {
@@ -27,7 +29,12 @@ export default function ProgramHome({ navigation }: RouterProps) {
     };
 
     return (
-        <View style={styles.viewContainer}>
+        <View
+            style={{
+                ...styles.viewContainer,
+                backgroundColor: theme.colors.surface,
+            }}
+        >
             <Text style={styles.title}>My programs</Text>
 
             <ProgramViewer

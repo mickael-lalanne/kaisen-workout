@@ -1,15 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import {
-    Appbar,
-    IconButton,
-    Menu,
-    RadioButton,
-    Switch,
-    Text,
-    TouchableRipple,
-    useTheme,
-} from 'react-native-paper';
+import { Appbar, IconButton, useTheme } from 'react-native-paper';
 import {
     CommonActions,
     getFocusedRouteNameFromRoute,
@@ -17,9 +7,8 @@ import {
 } from '@react-navigation/native';
 import { EScreens, RouterProps } from '../app/router';
 import ConfirmDialog from './shared/ConfirmDialog';
-import { useObject, useQuery, useRealm } from '@realm/react';
+import { useObject, useRealm } from '@realm/react';
 import { ESessionState, Session } from '../models/Session';
-import { EWeightUnit, Preferences } from '../models/Preferences';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
     selectCurrentSessionId,
@@ -27,13 +16,13 @@ import {
 } from '../features/currentSession';
 import { BSON } from 'realm';
 import * as Haptics from 'expo-haptics';
+import PreferencesMenu from './PreferencesMenu';
 
 interface HeaderBarProps {
     navigation: RouterProps['navigation'];
 }
 
 export default function HeaderBar({ navigation }: HeaderBarProps) {
-    const [visible, setVisible] = useState<boolean>(false);
     const [cancelSession, setCancelSession] = useState<boolean>(false);
     const [finishSession, setFinishSession] = useState<boolean>(false);
     const [routeName, setRouteName] = useState<EScreens>();
@@ -53,20 +42,11 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
         new BSON.ObjectId(currentSessionId)
     );
 
-    const preferences: Preferences | undefined = useQuery(
-        Preferences,
-        (collection) => collection
-    ).at(0);
-
     useEffect(() => {
         setRouteName(
             (getFocusedRouteNameFromRoute(route) ?? route.name) as EScreens
         );
     }, [route]);
-
-    const openMenu = () => setVisible(true);
-
-    const closeMenu = () => setVisible(false);
 
     const _getTitle = (): string => {
         switch (routeName) {
@@ -109,22 +89,6 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
                     routes: [{ name: EScreens.Workout }],
                 })
             );
-        });
-    };
-
-    const setDarkMode = (value: boolean) => {
-        realm.write(() => {
-            if (preferences) {
-                preferences.darkMode = value;
-            }
-        });
-    };
-
-    const setWeightUnit = (value: EWeightUnit) => {
-        realm.write(() => {
-            if (preferences) {
-                preferences.weightUnit = value;
-            }
         });
     };
 
@@ -192,52 +156,7 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
                 titleStyle={{ fontSize: 17, fontWeight: 'bold' }}
             />
             {FinishSessionIcon()}
-            <Menu
-                visible={visible}
-                onDismiss={closeMenu}
-                anchor={
-                    <Appbar.Action
-                        icon="dots-vertical"
-                        onPress={openMenu}
-                    ></Appbar.Action>
-                }
-            >
-                <TouchableRipple
-                    onPress={() => setDarkMode(!preferences?.darkMode)}
-                >
-                    <View style={styles.preference}>
-                        <Text>Dark mode</Text>
-                        <View pointerEvents="none">
-                            <Switch value={preferences?.darkMode} />
-                        </View>
-                    </View>
-                </TouchableRipple>
-
-                <Text style={styles.menuTitle}>Weight unit</Text>
-                <RadioButton.Group
-                    onValueChange={(value) =>
-                        setWeightUnit(value as EWeightUnit)
-                    }
-                    value={preferences?.weightUnit || EWeightUnit.KG}
-                >
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            paddingLeft: 25,
-                        }}
-                    >
-                        <View style={styles.radioBtnContainer}>
-                            <Text style={styles.radioBtnText}>Kg</Text>
-                            <RadioButton value={EWeightUnit.KG} />
-                        </View>
-                        <View style={styles.radioBtnContainer}>
-                            <Text style={styles.radioBtnText}>Lb</Text>
-                            <RadioButton value={EWeightUnit.LB} />
-                        </View>
-                    </View>
-                </RadioButton.Group>
-            </Menu>
+            <PreferencesMenu />
 
             <ConfirmDialog
                 visible={cancelSession}
@@ -257,27 +176,3 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
         </Appbar.Header>
     );
 }
-
-const styles = StyleSheet.create({
-    preference: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-    },
-    radioBtnContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    radioBtnText: {
-        opacity: 0.7,
-        fontSize: 12,
-        fontStyle: 'italic',
-    },
-    menuTitle: {
-        paddingLeft: 16,
-        marginTop: 5,
-    },
-});

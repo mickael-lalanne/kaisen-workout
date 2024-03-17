@@ -60,7 +60,7 @@ export default function SetViewer({
                 <View
                     style={{
                         ...styles.setContainer,
-                        borderColor: theme.colors.text,
+                        borderColor: theme.colors.inverseSurface,
                         backgroundColor: isActive
                             ? theme.colors.elevation.level3
                             : undefined,
@@ -70,7 +70,7 @@ export default function SetViewer({
                         exercises={exercises.filter((e) =>
                             item.exerciceIds.includes(e._id.toString())
                         )}
-                        size={SET_HEIGHT - 2}
+                        size={SET_HEIGHT - 1}
                     />
                     <View style={{ alignItems: 'center', flex: 1 }}>
                         <Text style={styles.setName}>{setNameToDisplay}</Text>
@@ -108,7 +108,7 @@ export default function SetViewer({
 
 const styles = StyleSheet.create({
     setContainer: {
-        borderWidth: 1,
+        borderWidth: 0.5,
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 5,

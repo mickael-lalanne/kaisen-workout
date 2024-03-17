@@ -115,7 +115,7 @@ export default function ProgressionReportScreen({ route }: RouterProps) {
     }
 
     return (
-        <ScrollView>
+        <ScrollView style={{ backgroundColor: theme.colors.surface }}>
             <Card
                 style={{
                     ...styles.viewContainer,

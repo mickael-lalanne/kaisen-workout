@@ -11,6 +11,7 @@ import {
     launchImageLibrary,
 } from 'react-native-image-picker';
 import { EScreens, RouterProps } from '../app/router';
+import { useAppTheme } from '../app/theme';
 
 export default function ProgramBuilderScreen({
     navigation,
@@ -24,6 +25,8 @@ export default function ProgramBuilderScreen({
     const [showSetBuilder, setShowSetBuilder] = useState<boolean>(false);
     const [programId, setProgramId] = useState<BSON.ObjectId>();
     const [setToEdit, setSetToEdit] = useState<ISet>();
+
+    const theme = useAppTheme();
 
     // Called when a program is selected for edition
     useEffect(() => {
@@ -157,7 +160,10 @@ export default function ProgramBuilderScreen({
     };
 
     return (
-        <View style={styles.viewContainer}>
+        <View style={{
+            ...styles.viewContainer,
+            backgroundColor: theme.colors.surface,
+        }}>
             <TextInput
                 label="Program Name"
                 value={programName}

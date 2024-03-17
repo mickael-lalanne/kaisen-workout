@@ -41,6 +41,7 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     };
 
     const onStartWorkoutPress = () => {
+        if (programs.length === 0) { return; }
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         setProgramSelectorVisible(true);
     };
@@ -54,16 +55,23 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
         >
             {/* TODO : add title */}
 
-            <View style={{ height: 180 }}>
-                {NoProgramMessage()}
-            </View>
+            <View style={{ height: 180 }}>{NoProgramMessage()}</View>
 
             <Button
                 style={styles.workoutBtn}
                 contentStyle={{ height: 100 }}
-                mode="contained"
+                mode="contained-tonal"
+                textColor={
+                    programs.length === 0
+                        ? theme.colors.surfaceContainerHighest
+                        : theme.colors.onPrimary
+                }
+                buttonColor={
+                    programs.length === 0
+                        ? theme.colors.surfaceContainerLow
+                        : theme.colors.primary
+                }
                 onPress={onStartWorkoutPress}
-                disabled={programs.length === 0}
             >
                 START WORKOUT
             </Button>
@@ -86,6 +94,12 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     );
 }
 
+const WORKOUT_BTN_STYLE = {
+    borderRadius: 5,
+    marginVertical: 20,
+    marginHorizontal: 50,
+};
+
 const styles = StyleSheet.create({
     viewContainer: {
         flex: 1,
@@ -102,10 +116,11 @@ const styles = StyleSheet.create({
         marginRight: 100,
         height: 280,
     },
-    workoutBtn: {
-        borderRadius: 5,
-        marginVertical: 20,
-        marginHorizontal: 50,
+    workoutBtn: WORKOUT_BTN_STYLE,
+    workoutBtnDisable: {
+        ...WORKOUT_BTN_STYLE,
+        opacity: 0.2,
+        pointerEvents: 'none',
     },
     noProgramText: {
         fontSize: 12,

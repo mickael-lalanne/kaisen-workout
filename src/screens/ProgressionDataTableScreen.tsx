@@ -8,6 +8,7 @@ import { formatDateToReadable, getDurationBeweenDates } from '../app/utils';
 import { Program } from '../models/Program';
 import { EScreens, RouterProps } from '../app/router';
 import InfoBox from '../components/shared/InfoBox';
+import { useAppTheme } from '../app/theme';
 
 export default function ProgressionDataTableScreen({ navigation }: RouterProps) {
     const [page, setPage] = useState<number>(0);
@@ -15,6 +16,8 @@ export default function ProgressionDataTableScreen({ navigation }: RouterProps) 
     const [itemsPerPage, onItemsPerPageChange] = useState(
         numberOfItemsPerPageList[0]
     );
+
+    const theme = useAppTheme();
 
     const sessions: Realm.Results<Session> = useQuery(
         Session,
@@ -66,7 +69,7 @@ export default function ProgressionDataTableScreen({ navigation }: RouterProps) 
     };
 
     return (
-        <View style={styles.container}>
+        <View style={{...styles.container, backgroundColor: theme.colors.surface}}>
             {NoSessionMessage()}
 
             <DataTable>

@@ -16,11 +16,11 @@ export default function InfoBox({ text, style }: InfoBoxProps) {
             style={{
                 ...style,
                 ...styles.container,
-                backgroundColor: theme.colors.info,
+                backgroundColor: theme.colors.tertiary,
             }}
         >
-            <Icon source="information-outline" size={30} color="white" />
-            <Text style={styles.text}>{text}</Text>
+            <Icon source="information-outline" size={30} color={theme.colors.onTertiary} />
+            <Text style={{...styles.text, color: theme.colors.onTertiary}}>{text}</Text>
         </View>
     );
 }
@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     text: {
-        color: 'white',
         fontStyle: 'italic',
     }
 });
