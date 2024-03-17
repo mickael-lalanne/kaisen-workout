@@ -16,7 +16,6 @@ export default function ProgramScreen({ navigation }: RouterProps) {
                 <Stack.Screen name={EScreens.ProgramBuilder} component={ProgramBuilderScreen} />
                 <Stack.Screen name={EScreens.Exercises} component={ExerciseScreen} />
             </Stack.Navigator>
-
         </View>
     );
 }

@@ -75,3 +75,28 @@ export const formatDateToReadable = (date: Date): string => {
         day: 'numeric',
     });
 };
+
+/**
+ * Calculates the duration between two dates and returns it as a formatted string.
+ * @param date1 - The first date.
+ * @param date2 - The second date.
+ * @returns The duration between the two dates as a formatted string. Ex: 1h 30m 15s
+ */
+export const getDurationBeweenDates = (date1: Date, date2: Date): string => {
+    const durationInMs: number = Math.round(
+        Math.abs(date2.getTime() - date1.getTime()) / 1000
+    );
+
+    const durations: string[] = formatDuration(durationInMs).split(':');
+
+    switch (durations.length) {
+        case 1:
+            return `${durations[0]}s`;
+        case 2:
+            return `${durations[0]}m ${durations[1]}s`;
+        case 3:
+            return `${durations[0]}h ${durations[1]}m ${durations[2]}s`;
+        default:
+            return formatDuration(durationInMs);
+    }
+};

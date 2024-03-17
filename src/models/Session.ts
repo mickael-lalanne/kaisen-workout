@@ -10,6 +10,7 @@ export class Session extends Realm.Object {
     _id: BSON.ObjectId = new BSON.ObjectId();
     programId!: BSON.ObjectId;
     date!: Date;
+    endDate?: Date;
     note?: string;
     state!: string; // ESessionState
 

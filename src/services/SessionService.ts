@@ -6,19 +6,32 @@ import {
     SessionRep,
     SessionSet,
 } from '../models/Session';
-import { BSON, List } from 'realm';
+import { BSON } from 'realm';
 
 /**
- * Retrieves the in-progress session from the given collection.
+ * Retrieves the in-progress sessions from the given collection.
  * @param collection - The collection of sessions to search in.
- * @returns The in-progress session, if found.
+ * @returns The in-progress sessions, if found.
  */
-export function getInProgressSession(
+export function getInProgressSessions(
     collection: Realm.Results<Session>
 ): Realm.Results<Session> {
     return collection
         .sorted('date')
         .filtered('state == $0', ESessionState.InProgress);
+}
+
+/**
+ * Retrieves the finished sessions from the given collection.
+ * @param collection - The collection of sessions to search in.
+ * @returns The finished sessions, if found.
+ */
+export function getFinishedSessions(
+    collection: Realm.Results<Session>
+): Realm.Results<Session> {
+    return collection
+        .sorted('date', true)
+        .filtered('state == $0', ESessionState.Done);
 }
 
 /**

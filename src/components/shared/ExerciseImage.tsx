@@ -7,6 +7,7 @@ type SessionSetItemProps = {
     size: number;
     round?: boolean;
     border?: boolean;
+    style?: object;
 };
 
 export default function ExerciseImage({
@@ -14,6 +15,7 @@ export default function ExerciseImage({
     size,
     round,
     border,
+    style
 }: SessionSetItemProps) {
     const theme = useAppTheme();
 
@@ -42,6 +44,7 @@ export default function ExerciseImage({
     return (
         <View
             style={{
+                ...style,
                 ...styles.viewContainer,
                 borderColor: theme.colors.onSurface,
                 height: size,

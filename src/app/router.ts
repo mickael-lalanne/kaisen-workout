@@ -10,6 +10,8 @@ export enum EScreens {
     WorkoutHome = 'Workout Home',
     WorkoutSession = 'Workout Session',
     Progression = 'Progression',
+    ProgressionHome = 'Progression Home',
+    ProgressionReport = 'Progression Report',
 }
 
 type RootStackParamList = {
@@ -21,6 +23,8 @@ type RootStackParamList = {
     [EScreens.WorkoutHome]: undefined;
     [EScreens.WorkoutSession]: undefined;
     [EScreens.Progression]: undefined;
+    [EScreens.ProgressionHome]: undefined;
+    [EScreens.ProgressionReport]: { sessionId: string };
 };
 
 export type RouterProps = { navigation: DrawerNavigationProp<RootStackParamList>, route?: any };

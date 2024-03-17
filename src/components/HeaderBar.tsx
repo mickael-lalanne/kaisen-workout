@@ -81,7 +81,10 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
                     }) + ' session'
                 );
             case EScreens.Progression:
+            case EScreens.ProgressionHome:
                 return '📈  Analyze like Nanami';
+            case EScreens.ProgressionReport:
+                return 'Session Report';
             case EScreens.ProgramBuilder:
                 return 'Program Creation';
             case EScreens.Exercises:
@@ -97,6 +100,7 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
         realm.write(() => {
             if (session) {
                 session.state = state;
+                session.endDate = new Date();
             }
             dispatch(setCurrentSessionId(undefined));
             navigation.dispatch(
@@ -128,7 +132,27 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
         const showBackIcon =
             routeName === EScreens.ProgramBuilder ||
             routeName === EScreens.Exercises ||
-            routeName === EScreens.WorkoutSession;
+            routeName === EScreens.WorkoutSession ||
+            routeName === EScreens.ProgressionReport;
+
+        let backRoute: EScreens;
+        switch (routeName) {
+            case EScreens.ProgramBuilder:
+                backRoute = EScreens.ProgramHome;
+                break;
+            case EScreens.Exercises:
+                backRoute = EScreens.ProgramHome;
+                break;
+            case EScreens.WorkoutSession:
+                backRoute = EScreens.WorkoutHome;
+                break;
+            case EScreens.ProgressionReport:
+                backRoute = EScreens.ProgressionHome;
+                break;
+            default:
+                backRoute = EScreens.WorkoutHome;
+                break;
+        }
 
         const pressHandler =
             routeName === EScreens.WorkoutSession
@@ -136,7 +160,7 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
                       setCancelSession(true);
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   }
-                : () => navigation.goBack();
+                : () => navigation.navigate(backRoute as any);
 
         if (showBackIcon) {
             return <Appbar.BackAction onPress={() => pressHandler()} />;

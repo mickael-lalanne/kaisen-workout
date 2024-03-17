@@ -5,14 +5,12 @@ import React, { useState } from 'react';
 import { useQuery, useRealm } from '@realm/react';
 import { Program } from '../models/Program';
 import ProgramViewer from '../components/shared/ProgramViewer';
-import { useAppTheme } from '../app/theme';
 import ConfirmDialog from '../components/shared/ConfirmDialog';
 
 export default function ProgramHome({ navigation }: RouterProps) {
     const [programToDelete, setProgramToDelete] = useState<Program>();
 
     const programs = useQuery(Program);
-    const theme = useAppTheme();
     const realm = useRealm();
 
     const deleteProgram = (): void => {

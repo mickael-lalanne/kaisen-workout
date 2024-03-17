@@ -12,7 +12,7 @@ import {
 } from '@react-navigation/native';
 import { useAppDispatch } from '../app/hooks';
 import { setActiveSet, setCurrentSessionId } from '../features/currentSession';
-import { getInProgressSession } from '../services/SessionService';
+import { getInProgressSessions } from '../services/SessionService';
 
 export default function WorkoutScreen({ navigation }: RouterProps) {
     const Stack = createStackNavigator();
@@ -20,7 +20,7 @@ export default function WorkoutScreen({ navigation }: RouterProps) {
 
     const session: Session | undefined = useQuery(
         Session,
-        getInProgressSession
+        getInProgressSessions
     ).at(0);
     const route = useRoute();
 
