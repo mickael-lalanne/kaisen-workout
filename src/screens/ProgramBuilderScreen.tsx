@@ -49,6 +49,10 @@ export default function ProgramBuilderScreen({
      * Create or save a program to the local database
      */
     const saveProgram = (): void => {
+        if (isDisabled) {
+            return;
+        }
+
         realm.write(() => {
             realm.create(
                 Program,
@@ -159,11 +163,16 @@ export default function ProgramBuilderScreen({
         }
     };
 
+    const isDisabled: boolean =
+        !programName || !programSets.length || !programImage;
+
     return (
-        <View style={{
-            ...styles.viewContainer,
-            backgroundColor: theme.colors.surface,
-        }}>
+        <View
+            style={{
+                ...styles.viewContainer,
+                backgroundColor: theme.colors.surface,
+            }}
+        >
             <TextInput
                 label="Program Name"
                 value={programName}
@@ -206,7 +215,9 @@ export default function ProgramBuilderScreen({
                     sets={programSets}
                     deleteHandler={deleteSet}
                     editHandler={editSet}
-                    reorderHandler={(newSets: ISet[]) => setProgramSets(newSets)}
+                    reorderHandler={(newSets: ISet[]) =>
+                        setProgramSets(newSets)
+                    }
                 />
 
                 <SetBuilder
@@ -228,10 +239,20 @@ export default function ProgramBuilderScreen({
                     Cancel
                 </Button>
                 <Button
-                    contentStyle={{ width: FOOTER_BTN_WIDTH }}
+                    contentStyle={{
+                        width: FOOTER_BTN_WIDTH,
+                        opacity: isDisabled ? 0.2 : 1,
+                    }}
                     mode="contained"
-                    disabled={
-                        !programName || !programSets.length || !programImage
+                    textColor={
+                        isDisabled
+                            ? theme.colors.onSurface
+                            : theme.colors.onPrimary
+                    }
+                    buttonColor={
+                        isDisabled
+                            ? theme.colors.surfaceContainerLow
+                            : theme.colors.primary
                     }
                     onPress={() => saveProgram()}
                 >

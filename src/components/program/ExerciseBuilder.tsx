@@ -98,6 +98,8 @@ export default function ExerciseBuilder({
         }
     };
 
+    const isDisabled: boolean = !name || !image;
+
     return (
         <Portal>
             <Dialog visible={visible} onDismiss={cancelExerciseCreation}>
@@ -137,9 +139,9 @@ export default function ExerciseBuilder({
                         icon="content-save-outline"
                         mode="contained"
                         size={25}
-                        style={{ width: 75 }}
+                        style={{ width: 75, opacity: isDisabled ? 0.5 : 1 }}
                         onPress={saveExercise}
-                        disabled={!name || !image}
+                        disabled={isDisabled}
                     />
                 </Dialog.Actions>
             </Dialog>

@@ -41,7 +41,9 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
     };
 
     const onStartWorkoutPress = () => {
-        if (programs.length === 0) { return; }
+        if (programs.length === 0) {
+            return;
+        }
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         setProgramSelectorVisible(true);
     };
@@ -59,11 +61,14 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
 
             <Button
                 style={styles.workoutBtn}
-                contentStyle={{ height: 100 }}
+                contentStyle={{
+                    height: 100,
+                    opacity: programs.length === 0 ? 0.2 : 1,
+                }}
                 mode="contained-tonal"
                 textColor={
                     programs.length === 0
-                        ? theme.colors.surfaceContainerHighest
+                        ? theme.colors.onSurface
                         : theme.colors.onPrimary
                 }
                 buttonColor={
@@ -73,7 +78,7 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
                 }
                 onPress={onStartWorkoutPress}
             >
-                START WORKOUT
+                START WORKOUT ⚔️
             </Button>
 
             <ProgramSelector

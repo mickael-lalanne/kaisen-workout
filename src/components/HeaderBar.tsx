@@ -52,7 +52,7 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
         switch (routeName) {
             case EScreens.Workout:
             case EScreens.WorkoutHome:
-                return '⚔️  Perform like Toji';
+                return 'Perform like Toji';
             case EScreens.WorkoutSession:
                 return (
                     new Date().toLocaleDateString('en-US', {
@@ -62,7 +62,7 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
                 );
             case EScreens.Progression:
             case EScreens.ProgressionHome:
-                return '📈  Analyze like Nanami';
+                return 'Analyze like Nanami';
             case EScreens.ProgressionReport:
                 return 'Session Report';
             case EScreens.ProgramBuilder:
@@ -72,7 +72,7 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
             case EScreens.Program:
             case EScreens.ProgramHome:
             default:
-                return '👑  Outclass like Gojo';
+                return 'Become strong like Gojo';
         }
     };
 

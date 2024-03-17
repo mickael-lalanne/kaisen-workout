@@ -116,7 +116,7 @@ export default function SetBuilder({
                     <View
                         style={{
                             ...styles.exerciseContainer,
-                            borderColor: theme.colors.text
+                            borderColor: theme.colors.onSurface
                         }}
                         key={i}
                     >
@@ -151,7 +151,7 @@ export default function SetBuilder({
                     ...styles.exerciseContainer,
                     marginTop: 20,
                     borderWidth: 1,
-                    borderColor: theme.colors.text,
+                    borderColor: theme.colors.primary,
                     justifyContent: 'center',
                 }}
                 onPress={() => setExercisePickerVisible(true)}
@@ -162,6 +162,8 @@ export default function SetBuilder({
             </TouchableRipple>;
         }
     }
+
+    const isDisabled = exerciceIds.length === 0 || !recupDuration || !repsNumber;
 
     return (
         <Portal>
@@ -228,9 +230,9 @@ export default function SetBuilder({
                         icon="content-save-outline"
                         mode="contained"
                         size={25}
-                        style={{ width: 75 }}
+                        style={{ width: 75, opacity: isDisabled ? 0.2 : 1,}}
                         onPress={saveSet}
-                        disabled={exerciceIds.length === 0 || !recupDuration || !repsNumber}
+                        disabled={isDisabled}
                     />
                 </Dialog.Actions>
             </Dialog>
@@ -251,7 +253,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderRadius: 10,
         height: EXERCICE_HEIGHT,
         marginTop: 20
@@ -266,8 +268,8 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     },
     exerciseImage: {
-        height: EXERCICE_HEIGHT - 2,
-        width: EXERCICE_HEIGHT - 2,
+        height: EXERCICE_HEIGHT - 1,
+        width: EXERCICE_HEIGHT - 1,
         objectFit: 'cover',
         borderRadius: 10,
     },
