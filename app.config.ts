@@ -11,4 +11,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
                 : 'kaisen.workout',
         softwareKeyboardLayoutMode: 'pan',
     },
+    updates: {
+        url: 'https://u.expo.dev/33396401-9659-4f40-b091-2a53c8d5c59b',
+    },
+    runtimeVersion: {
+        policy: 'appVersion',
+    },
 });
