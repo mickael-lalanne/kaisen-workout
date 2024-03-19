@@ -112,7 +112,7 @@ export default function SessionSetItem({ sessionSet }: SessionSetItemProps) {
             }}
             expanded={activeSet === sessionSet._id.toString()}
             onPress={() => {
-                dispatch(setActiveSet(sessionSet._id.toString()))
+                dispatch(setActiveSet(sessionSet._id.toString()));
             }}
             onLongPress={() => setConfirmDelete(true)}
         >
@@ -122,7 +122,9 @@ export default function SessionSetItem({ sessionSet }: SessionSetItemProps) {
                 visible={confirmDelete}
                 title="It stays between us 🙈"
                 content={
-                    'Do you want to skip the ' + _getExerciceName() + ' set for today ?'
+                    'Do you want to skip the ' +
+                    _getExerciceName() +
+                    ' set for today ?'
                 }
                 confirmHandler={deleteSet}
                 cancelHandler={() => setConfirmDelete(false)}
