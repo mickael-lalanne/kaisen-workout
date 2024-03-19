@@ -58,10 +58,11 @@ export default function ProgressionReportScreen({ route }: RouterProps) {
                 : 'kg';
 
         set.reps.forEach((rep, index) => {
-            const weightToDisplay: number =
+            const weightToDisplay: number = roundTwoDecimals(
                 preferences?.weightUnit === EWeightUnit.LB
-                    ? roundTwoDecimals(convertKgToLb(rep.weight))
-                    : rep.weight;
+                    ? convertKgToLb(rep.weight)
+                    : rep.weight
+            );
 
             repsElement.push(
                 <Text key={index} style={styles.repText}>

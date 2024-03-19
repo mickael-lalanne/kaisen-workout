@@ -67,11 +67,15 @@ Description : todo
    ```sh
    npm install
    ```
-3. Create a file called `local.properties` in `android/` folder with  this line :
+3. Create the following `env.local` file in the root folder :
+   ```
+   EXPO_ENVIRONMENT=local
+   ```
+4. Create a file called `local.properties` in `android/` folder with  this line :
    ```
    sdk.dir = C:\\Users\\WINDOWS_USERNAME\\AppData\\Local\\Android\\sdk
    ```
-4. Run the app locally
+5. Run the app locally
    ```sh
    npx expo run:android
    ```

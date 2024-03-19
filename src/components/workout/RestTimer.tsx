@@ -38,7 +38,10 @@ export default function RestTimer({}: RestTimerProps) {
 
     useEffect(() => {
         if (activeSet && activeSet.recupDuration) {
-            dispatch(setCountdown(activeSet.recupDuration));
+            // Change the countdown only if it's not running
+            if (!countdownIntervalId) {
+                dispatch(setCountdown(activeSet.recupDuration));
+            }
             setLocalCountdown(activeSet.recupDuration);
         }
     }, [activeSet]);
