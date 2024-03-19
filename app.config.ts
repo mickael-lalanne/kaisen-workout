@@ -10,8 +10,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     android: {
         package:
             (process.env as any).EXPO_ENVIRONMENT === 'local'
-                ? 'kaisen.workout.local'
-                : 'kaisen.workout',
+                ? 'kaisen.workout.truelocal'
+                // For apk env, the package should not have been named kaisen.workout.local
+                // But I messed up with configs and I don't want to loose my registered sessions
+                : 'kaisen.workout.local',
         softwareKeyboardLayoutMode: 'pan',
     },
     updates: {
