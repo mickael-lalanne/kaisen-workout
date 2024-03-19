@@ -3,7 +3,10 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 export default ({ config }: ConfigContext): ExpoConfig => ({
     ...config,
     slug: 'kaisen-workout',
-    name: 'Kaisen Workout',
+    name:
+        (process.env as any).EXPO_ENVIRONMENT === 'local'
+            ? 'Kaisen Workout Local'
+            : 'Kaisen Workout',
     android: {
         package:
             (process.env as any).EXPO_ENVIRONMENT === 'local'
