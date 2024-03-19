@@ -12,7 +12,6 @@ import { Preferences } from './src/models/Preferences';
 
 export default function App() {
     return (
-        // Remove "deleteRealmIfMigrationNeeded" option when the app is released
         <RealmProvider
             schema={[
                 Program,
@@ -23,7 +22,6 @@ export default function App() {
                 SessionRep,
                 Preferences,
             ]}
-            deleteRealmIfMigrationNeeded={true}
         >
             <Provider store={store}>
                 <AppChild />
