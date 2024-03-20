@@ -111,7 +111,7 @@ export default function ExerciseBuilder({
                         style={{ flexDirection: 'row', alignItems: 'center' }}
                     >
                         <TextInput
-                            style={{ flexGrow: 1 }}
+                            style={{ flexGrow: 1, flex: 1 }}
                             label="Name"
                             value={name}
                             onChangeText={(text) => setName(text)}
