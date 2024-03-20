@@ -87,7 +87,7 @@ export const startCountdown =
             if (countdown > 0 && countdownIntervalId) {
                 dispatch(setCountdown(countdown - 1));
                 // Vibrate when the countdown reaches some specific timings
-                if (countdown === 11 || countdown === 6) {
+                if (countdown === 16 ||countdown === 11 || countdown === 6) {
                     Vibration.vibrate(VIBRATION_LIGHT_PATTERN);
                 } else if (countdown === 1) {
                     Vibration.vibrate(VIBRATION_HEAVY_PATTERN);
