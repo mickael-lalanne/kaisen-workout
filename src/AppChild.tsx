@@ -29,7 +29,6 @@ import HeaderBar from './components/HeaderBar';
 import { StyleSheet } from 'react-native';
 import { useAppSelector } from './app/hooks';
 import { selectCurrentSessionId } from './features/currentSession';
-import * as Haptics from 'expo-haptics';
 import { useEffect, useState } from 'react';
 
 const Tab = createBottomTabNavigator();
@@ -101,7 +100,6 @@ export default function AppChild() {
             e.preventDefault();
             return;
         }
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     };
 
     const TabBarLabel = (text: string, focus: boolean): React.JSX.Element => {
