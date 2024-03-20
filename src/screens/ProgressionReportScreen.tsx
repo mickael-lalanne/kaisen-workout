@@ -3,7 +3,7 @@ import React from 'react';
 import { RouterProps } from '../app/router';
 import { Session, SessionSet } from '../models/Session';
 import { useQuery, useRealm } from '@realm/react';
-import { Card, Icon, Surface, Text } from 'react-native-paper';
+import { Card, Surface, Text } from 'react-native-paper';
 import { BSON } from 'realm';
 import {
     convertKgToLb,
@@ -76,11 +76,6 @@ export default function ProgressionReportScreen({ route }: RouterProps) {
             set.exerciceIds.includes(e._id)
         );
 
-        const orderIconSource: string =
-            set.order + 1 > 9
-                ? 'numeric-9-plus-box-outline'
-                : 'numeric-' + (set.order + 1) + '-box-outline';
-
         return (
             <Surface
                 elevation={5}
@@ -96,13 +91,17 @@ export default function ProgressionReportScreen({ route }: RouterProps) {
                     <ExerciseImage
                         exercises={setExercises}
                         size={50}
-                        style={{
-                            borderTopLeftRadius: BORDER_RADIUS,
-                            marginRight: 5,
-                        }}
+                        style={{ borderTopLeftRadius: BORDER_RADIUS }}
                     />
-                    <Icon source={orderIconSource} size={30} />
-                    <Text style={{ marginLeft: 5 }}>
+                    <View
+                        style={{
+                            ...styles.setOrderContainer,
+                            backgroundColor: theme.colors.elevation.level3,
+                        }}
+                    >
+                        <Text style={{ fontSize: 7 }}>{set.order + 1}</Text>
+                    </View>
+                    <Text style={styles.setTitle} numberOfLines={2}>
                         {setExercises.map((e) => e.name).join(' / ')}
                     </Text>
                 </View>
@@ -128,7 +127,9 @@ export default function ProgressionReportScreen({ route }: RouterProps) {
                         {formatDateToReadable(session.date)}
                     </Text>
                     <Text style={styles.reportDuration}>
-                        ({getDurationBeweenDates(session.date, session.endDate!)})
+                        (
+                        {getDurationBeweenDates(session.date, session.endDate!)}
+                        )
                     </Text>
                 </View>
                 <Card.Content>
@@ -188,15 +189,35 @@ const styles = StyleSheet.create({
     },
     setsContainer: {
         marginTop: 5,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         justifyContent: 'space-between',
         gap: 10,
     },
     setContainer: {
-        flexGrow: 1,
         borderRadius: BORDER_RADIUS,
+        width: '48%',
+    },
+    setOrderContainer: {
+        position: 'absolute',
+        width: 15,
+        height: 16,
+        bottom: 0,
+        left: 0,
+        justifyContent: 'center',
+        paddingLeft: 3,
+        borderTopRightRadius: BORDER_RADIUS,
+        textAlign: 'center',
+    },
+    setTitle: {
+        marginHorizontal: 5,
+        flex: 1,
+        fontSize: 10,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     repsContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
         padding: 7,
