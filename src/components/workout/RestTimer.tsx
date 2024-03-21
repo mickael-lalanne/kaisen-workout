@@ -3,9 +3,10 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
     clearCountdown,
     selectActiveSet,
-    selectCountdown,
+    selectCountdownDuration,
     selectCountdownIntervalId,
-    setCountdown,
+    setCountdownDuration,
+    setCountdownEndTime,
     setCountdownIntervalId,
     startCountdown,
 } from '../../features/currentSession';
@@ -22,9 +23,10 @@ type RestTimerProps = {};
 
 export default function RestTimer({}: RestTimerProps) {
     const [localCountdown, setLocalCountdown] = useState<number>(0);
+    const [pause, setPause] = useState<boolean>(false);
 
     const activeSetId: string | undefined = useAppSelector(selectActiveSet);
-    const countdown: number = useAppSelector(selectCountdown);
+    const countdownDuration: number = useAppSelector(selectCountdownDuration);
     const countdownIntervalId: NodeJS.Timeout | undefined = useAppSelector(
         selectCountdownIntervalId
     );
@@ -40,7 +42,9 @@ export default function RestTimer({}: RestTimerProps) {
         if (activeSet && activeSet.recupDuration) {
             // Change the countdown only if it's not running
             if (!countdownIntervalId) {
-                dispatch(setCountdown(activeSet.recupDuration));
+                setPause(false);
+                console.log(activeSet.recupDuration);
+                dispatch(setCountdownDuration(activeSet.recupDuration));
             }
             setLocalCountdown(activeSet.recupDuration);
         }
@@ -51,12 +55,29 @@ export default function RestTimer({}: RestTimerProps) {
         setLocalCountdown(Number(value) || 0);
     };
 
+    const onPlayIconPress = () => {
+        const countdownEndDate: Date = new Date(
+            new Date().getTime() +
+                // By default, the countdown duration is the recup duration of the active set
+                // If the user has paused the countdown, the countdown duration is the remaining time
+                (pause ? countdownDuration : activeSet?.recupDuration!) * 1000
+        );
+        const countdownEndTime: number = countdownEndDate.getTime() + 1000;
+        dispatch(setCountdownEndTime(Math.round(countdownEndTime)));
+        dispatch(startCountdown());
+        setPause(false);
+    };
+
     const PlayPauseIcon = (): React.JSX.Element => {
         if (countdownIntervalId) {
             return (
                 <IconButton
                     icon="pause"
-                    onPress={() => dispatch(setCountdownIntervalId(undefined))}
+                    onPress={() => {
+                        setPause(true);
+                        dispatch(setCountdownIntervalId(undefined));
+                        dispatch(setCountdownEndTime(undefined));
+                    }}
                     mode="contained"
                 />
             );
@@ -64,7 +85,7 @@ export default function RestTimer({}: RestTimerProps) {
             return (
                 <IconButton
                     icon="play"
-                    onPress={() => dispatch(startCountdown())}
+                    onPress={onPlayIconPress}
                     mode="contained"
                 />
             );
@@ -80,7 +101,7 @@ export default function RestTimer({}: RestTimerProps) {
         >
             <View style={styles.timerContainer}>
                 <Text style={styles.timerText}>
-                    {formatDuration(countdown || 0)}
+                    {formatDuration(countdownDuration || 0)}
                 </Text>
             </View>
             <View style={styles.rightContainer}>
