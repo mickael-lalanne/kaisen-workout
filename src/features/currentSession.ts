@@ -34,7 +34,7 @@ export const currentSessionSlice = createSlice({
         ) => {
             state.countdownIntervalId = action.payload;
         },
-        clearCoutdown: (state, action: PayloadAction<number | undefined>) => {
+        clearCountdown: (state, action: PayloadAction<number | undefined>) => {
             state.countdown = action.payload || 0;
             state.countdownIntervalId = undefined;
         },
@@ -51,7 +51,7 @@ export const {
     setActiveSet,
     setCountdown,
     setCountdownIntervalId,
-    clearCoutdown,
+    clearCountdown,
     setCurrentSessionId,
 } = currentSessionSlice.actions;
 

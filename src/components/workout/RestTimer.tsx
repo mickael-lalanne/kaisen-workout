@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
-    clearCoutdown,
+    clearCountdown,
     selectActiveSet,
     selectCountdown,
     selectCountdownIntervalId,
@@ -47,7 +47,7 @@ export default function RestTimer({}: RestTimerProps) {
     }, [activeSet]);
 
     const onLocalCountdownChange = (value: string) => {
-        dispatch(clearCoutdown(Number(value) || 0));
+        dispatch(clearCountdown(Number(value) || 0));
         setLocalCountdown(Number(value) || 0);
     };
 
@@ -95,7 +95,7 @@ export default function RestTimer({}: RestTimerProps) {
                 <View style={styles.actionButtonsContainer}>
                     <IconButton
                         icon="stop"
-                        onPress={() => dispatch(clearCoutdown(localCountdown))}
+                        onPress={() => dispatch(clearCountdown(localCountdown))}
                         mode="contained"
                     />
                     {PlayPauseIcon()}
