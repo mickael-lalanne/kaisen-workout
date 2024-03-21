@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
         fontSize: 10,
     },
     exerciseImage: {
-        height: 75,
-        width: 75,
+        height: 95,
+        width: 95,
         objectFit: 'cover',
         borderRadius: RADIUS,
     },

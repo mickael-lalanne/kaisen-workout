@@ -56,14 +56,14 @@ export default function ExerciseBuilder({
             }, exerciseToEdit ? Realm.UpdateMode.Modified : undefined);
             saveHandler(savedExercise);
         });
-        hideBuilder();
+        cancelExerciseCreation();
     };
 
     const selectImage = async (): Promise<void> => {
         const result: ImagePickerResponse = await launchImageLibrary({
             mediaType: 'photo',
-            maxWidth: 150,
-            maxHeight: 150,
+            maxWidth: 300,
+            maxHeight: 300,
             includeBase64: true,
         });
 
