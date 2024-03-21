@@ -56,14 +56,14 @@ export default function ExerciseBuilder({
             }, exerciseToEdit ? Realm.UpdateMode.Modified : undefined);
             saveHandler(savedExercise);
         });
-        hideBuilder();
+        cancelExerciseCreation();
     };
 
     const selectImage = async (): Promise<void> => {
         const result: ImagePickerResponse = await launchImageLibrary({
             mediaType: 'photo',
-            maxWidth: 150,
-            maxHeight: 150,
+            maxWidth: 300,
+            maxHeight: 300,
             includeBase64: true,
         });
 
@@ -111,7 +111,7 @@ export default function ExerciseBuilder({
                         style={{ flexDirection: 'row', alignItems: 'center' }}
                     >
                         <TextInput
-                            style={{ flexGrow: 1 }}
+                            style={{ flexGrow: 1, flex: 1 }}
                             label="Name"
                             value={name}
                             onChangeText={(text) => setName(text)}

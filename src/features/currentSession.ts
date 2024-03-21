@@ -7,14 +7,15 @@ import {
 } from '../app/vibration';
 
 export interface CurrentSessionState {
-    countdown: number;
+    countdownDuration: number;
+    countdownEndTime?: number;
     countdownIntervalId?: NodeJS.Timeout;
     activeSet?: string;
     id?: string;
 }
 
 const initialState: CurrentSessionState = {
-    countdown: 0,
+    countdownDuration: 0,
     activeSet: undefined,
 };
 
@@ -25,8 +26,14 @@ export const currentSessionSlice = createSlice({
         setActiveSet: (state, action: PayloadAction<string>) => {
             state.activeSet = action.payload;
         },
-        setCountdown: (state, action: PayloadAction<number>) => {
-            state.countdown = action.payload;
+        setCountdownDuration: (state, action: PayloadAction<number>) => {
+            state.countdownDuration = action.payload;
+        },
+        setCountdownEndTime: (
+            state,
+            action: PayloadAction<number | undefined>
+        ) => {
+            state.countdownEndTime = action.payload;
         },
         setCountdownIntervalId: (
             state,
@@ -34,8 +41,8 @@ export const currentSessionSlice = createSlice({
         ) => {
             state.countdownIntervalId = action.payload;
         },
-        clearCoutdown: (state, action: PayloadAction<number | undefined>) => {
-            state.countdown = action.payload || 0;
+        clearCountdown: (state, action: PayloadAction<number | undefined>) => {
+            state.countdownDuration = action.payload || 0;
             state.countdownIntervalId = undefined;
         },
         setCurrentSessionId: (
@@ -49,17 +56,18 @@ export const currentSessionSlice = createSlice({
 
 export const {
     setActiveSet,
-    setCountdown,
+    setCountdownDuration,
     setCountdownIntervalId,
-    clearCoutdown,
+    clearCountdown,
     setCurrentSessionId,
+    setCountdownEndTime,
 } = currentSessionSlice.actions;
 
 export const selectActiveSet = (state: RootState) =>
     state.currentSession.activeSet;
 
-export const selectCountdown = (state: RootState) =>
-    state.currentSession.countdown;
+export const selectCountdownDuration = (state: RootState) =>
+    state.currentSession.countdownDuration;
 
 export const selectCountdownIntervalId = (state: RootState) =>
     state.currentSession.countdownIntervalId;
@@ -70,9 +78,10 @@ export const selectCurrentSessionId = (state: RootState) =>
 export default currentSessionSlice.reducer;
 
 /**
- * Decrements the countdown value by 1 every second until it reaches 0.
- * Dispatches the `startCountdown` action to update the countdown value in the Redux store.
- * Stops the countdown when the countdown value reaches 0.
+ * Starts the countdown timer.
+ * @remarks
+ * This function is a Redux thunk action that dispatches actions to update the countdown duration and trigger vibrations at specific timings.
+ * @returns A Redux thunk function.
  */
 export const startCountdown =
     () => (dispatch: AppDispatch, getState: () => RootState) => {
@@ -82,19 +91,33 @@ export const startCountdown =
         }
 
         const intervalId = setInterval(() => {
-            const { countdown, countdownIntervalId } =
+            const { countdownEndTime, countdownIntervalId } =
                 getState().currentSession;
-            if (countdown > 0 && countdownIntervalId) {
-                dispatch(setCountdown(countdown - 1));
+
+            if (!countdownEndTime) {
+                return;
+            }
+
+            const secondsLeft: number = Math.round(
+                (countdownEndTime - new Date().getTime()) / 1000
+            );
+
+            if (secondsLeft > 0 && countdownIntervalId) {
+                dispatch(setCountdownDuration(secondsLeft - 1));
                 // Vibrate when the countdown reaches some specific timings
-                if (countdown === 11 || countdown === 6) {
+                if (
+                    secondsLeft === 16 ||
+                    secondsLeft === 11 ||
+                    secondsLeft === 6
+                ) {
                     Vibration.vibrate(VIBRATION_LIGHT_PATTERN);
-                } else if (countdown === 1) {
+                } else if (secondsLeft === 1) {
                     Vibration.vibrate(VIBRATION_HEAVY_PATTERN);
                 }
             } else {
                 clearInterval(intervalId);
                 dispatch(setCountdownIntervalId(undefined));
+                dispatch(setCountdownEndTime(undefined));
             }
         }, 1000);
         dispatch(setCountdownIntervalId(intervalId));

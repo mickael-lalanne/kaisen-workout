@@ -145,13 +145,13 @@ const styles = StyleSheet.create({
     viewerContainer: {
         padding: 10,
         borderRadius: 15,
-        maxHeight: Dimensions.get('window').height * 0.5,
+        maxHeight: Dimensions.get('window').height - 280,
     },
     addBtn: {
         width: '100%',
         borderRadius: 5,
         marginHorizontal: 0,
-        marginVertical: 20,
+        marginVertical: 0,
     },
     noExerciseText: {
         marginBottom: 10,

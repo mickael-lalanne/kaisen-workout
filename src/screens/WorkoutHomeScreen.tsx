@@ -65,6 +65,7 @@ export default function WorkoutHomeScreen({ navigation }: RouterProps) {
                     height: 100,
                     opacity: programs.length === 0 ? 0.2 : 1,
                 }}
+                labelStyle={{fontSize: 15, fontWeight: 'bold'}}
                 mode="contained-tonal"
                 textColor={
                     programs.length === 0
