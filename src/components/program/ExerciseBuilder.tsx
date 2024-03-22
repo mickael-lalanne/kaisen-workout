@@ -12,7 +12,7 @@ import { Exercise } from '../../models/Exercise';
 export type ExerciseBuilderProps = {
     visible: boolean;
     hideBuilder: () => void;
-    saveHandler: (exercose: Exercise) => void;
+    saveHandler: (exercise: Exercise) => void;
     exerciseToEdit?: Exercise;
 };
 
