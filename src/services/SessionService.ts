@@ -45,7 +45,7 @@ export function getLastSession(
     return (collection: Realm.Results<Session>) =>
         collection
             .sorted('date', true)
-            .filtered('state != $0', ESessionState.InProgress)
+            .filtered('state == $0', ESessionState.Done)
             .filtered('programId == $0', programId);
 }
 
