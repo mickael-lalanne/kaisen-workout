@@ -61,7 +61,6 @@ export function getMaxSessionRep(
 ): SessionRep | undefined {
     return realm
         .objects(SessionRep)
-        .filtered('state == $0', ESessionState.Done)
         .filtered(
             'exerciseId == $0 && _id != $1 && order == $2',
             currentRep?.exerciseId,

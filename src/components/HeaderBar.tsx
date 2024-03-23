@@ -78,9 +78,17 @@ export default function HeaderBar({ navigation }: HeaderBarProps) {
 
     const endSession = (state: ESessionState) => {
         realm.write(() => {
-            if (session) {
+            if (session && state !== ESessionState.Canceled) {
                 session.state = state;
                 session.endDate = new Date();
+            } else if (session) {
+                session.sets.forEach((set) => {
+                    set.reps.forEach((rep) => {
+                        realm.delete(rep);
+                    });
+                    realm.delete(set);
+                });
+                realm.delete(session);
             }
             dispatch(setCurrentSessionId(undefined));
             navigation.dispatch(
