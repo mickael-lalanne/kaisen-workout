@@ -4,7 +4,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <!-- <img src="README-icon.png" alt="Logo" width="80" height="80"> -->
+    <img src="assets/icon.png" alt="Logo" width="80" height="80">
 
   <h3 align="center">Kaisen Workout</h3>
 
@@ -38,15 +38,23 @@
 <!-- ABOUT THE PROJECT -->
 ## About the project
 
-<!-- ![Product Name Screen Shot][product-screenshot] -->
-Description : todo
+![Product Name Screen Shot][product-screenshot]<br>
+Kaisen Workout is a mobile application that allows users to create and follow their own workout programs.<br>
+During a session, users can view their past performances and utilize a timer for their rest periods between sets.<br>
+Additionally, they can access a log of all completed sessions and visualize a detailed report for each one.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
-* [![React][React-native]][React-native-url]
+* ![React Native](https://img.shields.io/badge/react_native-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+* ![Expo](https://img.shields.io/badge/expo-1C1E24?style=for-the-badge&logo=expo&logoColor=#D04A37)
+* ![Realm](https://img.shields.io/badge/Realm-39477F?style=for-the-badge&logo=realm&logoColor=white)
+* ![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)
 * ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+* ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+
+And also [React Native Paper](https://reactnativepaper.com/) for the Material Design library.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -95,12 +103,13 @@ Mickaël Lalanne - mickael.lalanne03@gmail.com
 ## Acknowledgments
 
 * [React Native](https://reactnative.dev/docs/getting-started)
+* [Expo](https://expo.dev/)
+* [Atlas Device SDK for React Native](https://www.mongodb.com/docs/realm/sdk/react-native/)
+* [React Native Paper](https://reactnativepaper.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- [product-screenshot]: demo.gif -->
+[product-screenshot]: assets/demo.gif
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/mickael-lalanne/
-[React-native]:  https://img.shields.io/badge/react_native-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB
-[React-native-url]: https://reactnative.dev/
